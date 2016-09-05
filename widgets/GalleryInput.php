@@ -32,7 +32,6 @@ class GalleryInput extends InputWidget
 
     public $options = [];
 
-
     public function init()
     {
         parent::init();
