@@ -2,22 +2,18 @@
 
 namespace lo\modules\gallery\models;
 
-use Yii;
-
+use lo\core\db\ActiveRecord;
 
 /**
- * This is the model class for table "gallery".
+ * This is the model class for table "gallery_item".
  *
  * @property integer $id
- * @property string $slug
- * @property string $title
- * @property string $body
- * @property string $view
+ * @property string $name
  * @property integer $status
  * @property integer $created_at
  * @property integer $updated_at
  */
-class Gallery extends \lo\core\db\ActiveRecord
+class GalleryItem extends ActiveRecord
 {
     const STATUS_DRAFT = 0;
     const STATUS_PUBLISHED = 1;
@@ -27,7 +23,7 @@ class Gallery extends \lo\core\db\ActiveRecord
      */
     public static function tableName()
     {
-        return '{{%gallery}}';
+        return '{{%gallery__item}}';
     }
 
     /**
@@ -35,7 +31,7 @@ class Gallery extends \lo\core\db\ActiveRecord
      */
     public function metaClass()
     {
-        return GalleryMeta::class;
+        return GalleryItemMeta::class;
     }
 
 }

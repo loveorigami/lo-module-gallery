@@ -1,32 +1,35 @@
 {
-    "name": "loveorigami/lo-module-gallery",
-    "description": "Gallery module for Lo-CMS",
-    "version": "1.0",
-    "type": "yii2-extension",
-    "keywords": [
-        "yii2",
-        "gallery",
-        "module"
-    ],
-    "homepage": "https://github.com/loveorigami/lo-module-gallery",
-    "time": "2016-08-24",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Andrey Lukyanov",
-            "email": "loveorigami@mail.ru",
-            "homepage": "http://loveorigami.info",
-            "role": "Developer"
-        }
-    ],
-    "require": {
-        "yiisoft/yii2": "~2",
-		"abeautifulsite/simpleimage":"*",
-		"mongosoft/yii2-upload-behavior": "*"
-    },
-    "autoload": {
-        "psr-4": {
-            "lo\\modules\\gallery\\": ""
-        }
+  "name": "loveorigami/lo-module-gallery",
+  "description": "Gallery module for Lo-CMS",
+  "version": "1.0",
+  "type": "yii2-extension",
+  "keywords": [
+    "yii2",
+    "gallery",
+    "module"
+  ],
+  "homepage": "https://github.com/loveorigami/lo-module-gallery",
+  "time": "2016-08-24",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Andrey Lukyanov",
+      "email": "loveorigami@mail.ru",
+      "homepage": "http://loveorigami.info",
+      "role": "Developer"
     }
+  ],
+  "require": {
+    "yiisoft/yii2": "~2",
+    "abeautifulsite/simpleimage": "*",
+    "mongosoft/yii2-upload-behavior": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "lo\\modules\\gallery\\": ""
+    }
+  },
+  "extra": {
+    "bootstrap": "lo\\modules\\gallery\\Bootstrap"
+  }
 }
