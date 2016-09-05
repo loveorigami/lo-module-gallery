@@ -18,8 +18,9 @@ class Bootstrap implements BootstrapInterface
     {
         $container = Yii::$container;
 
-        $container->setSingleton('lo\modules\gallery\repository\ImageGalleryInterface', function () use ($app) {
-            return new ImageRepository();
-        });
+        $container->setSingleton(
+            'lo\modules\gallery\repository\ImageGalleryInterface',
+            'lo\modules\gallery\repository\ImageRepository'
+        );
     }
 }
