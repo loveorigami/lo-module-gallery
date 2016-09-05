@@ -104,10 +104,13 @@ class GalleryImageBehavior extends GalleryBehavior
         if ($this->createThumbsOnSave) {
             $this->createThumbs();
         }
+
         /** @var ActiveRecord $model */
-        //$model = $this->_repository->loadModel();
-        //$model->name = $this->fileName;
-        //$model->save();
+        $model = $this->_repository->loadModel();
+        $model->name = $this->fileName;
+        $model->entity = $this->entity;
+
+        $this->_repository->save();
 
     }
 

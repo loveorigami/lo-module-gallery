@@ -31,6 +31,8 @@ class ImageRepository extends Object implements ImageRepositoryInterface
     public function save()
     {
         if (!$this->model->save()) {
+            print_r($this->model->errors);
+        } else {
             echo 111;
         };
     }

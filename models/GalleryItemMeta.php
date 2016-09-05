@@ -35,7 +35,7 @@ class GalleryItemMeta extends MetaFields
                     "class" => fields\HtmlField::class,
                     "title" => Yii::t('backend', 'Text'),
                     "showInGrid" => false,
-                    "isRequired" => true,
+                    "isRequired" => false,
                 ],
                 "params" => [$this->owner, "description"]
             ],

@@ -9,6 +9,7 @@ use lo\core\db\ActiveRecord;
  *
  * @property integer $id
  * @property string $name
+ * @property string $entity
  * @property integer $status
  * @property integer $created_at
  * @property integer $updated_at
