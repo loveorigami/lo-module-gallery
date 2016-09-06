@@ -48,8 +48,8 @@ class GalleryImageBehavior extends GalleryBehavior
     /** @var string Type name assigned to model in image attachment action */
     public $entity;
 
-    /** @var string Table name for saving gallery images meta information */
-    public $modelName;
+    /** @var string Class name gallery */
+    public $modelClass;
 
     /** @var ImageRepositoryInterface $_repository */
     protected $_repository;
@@ -61,11 +61,23 @@ class GalleryImageBehavior extends GalleryBehavior
     {
         parent::__construct($config);
 
-        if ($this->modelName === null) {
-            throw new InvalidConfigException('The "modelName" property must be set.');
+        if ($this->modelClass === null) {
+            throw new InvalidConfigException('The "modelClass" property must be set.');
         }
 
-        $this->_repository = new $repository(['modelName' => $this->modelName]);
+        $this->_repository = new $repository([
+            'modelClass' => $this->modelClass,
+            'entity' => $this->entity
+        ]);
+    }
+
+    /**
+     * @return mixed relation
+     */
+    public function getImages()
+    {
+        $this->_repository->setOwner($this->owner);
+        return $this->_repository->getImages();
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace lo\modules\gallery\repository;
 
+use lo\core\db\ActiveQuery;
 use lo\core\db\ActiveRecord;
 use yii\base\Model;
 use yii\base\Object;
@@ -15,7 +16,13 @@ use yii\web\NotFoundHttpException;
 class ImageRepository extends Object implements ImageRepositoryInterface
 {
     /** @var string */
-    public $modelName;
+    protected $modelClass;
+
+    /** @var string */
+    protected $entity;
+
+    /** @var ActiveRecord $owner */
+    protected $owner;
 
     /** @var ActiveRecord $model */
     protected $model;
@@ -24,7 +31,7 @@ class ImageRepository extends Object implements ImageRepositoryInterface
     {
         if (!$this->model) {
             if (!$id) {
-                return $this->model = new $this->modelName;
+                return $this->model = new $this->modelClass;
             } else {
                 return $this->model = $this->findModel($id);
             }
@@ -48,11 +55,53 @@ class ImageRepository extends Object implements ImageRepositoryInterface
     protected function findModel($id)
     {
         /** @var ActiveRecord $class */
-        $class = $this->modelName;
+        $class = $this->modelClass;
         if (($model = $class::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
+    }
+
+    /**
+     * @param $owner
+     */
+    public function setOwner($owner)
+    {
+        $this->owner = $owner;
+    }
+
+    /**
+     * @param $entity
+     */
+    public function setEntity($entity)
+    {
+        $this->entity = $entity;
+    }
+
+    /**
+     * @param $modelClass
+     */
+    public function setModelClass($modelClass)
+    {
+        $this->modelClass = $modelClass;
+    }
+
+    /**
+     * @return ActiveQuery relation
+     */
+    public function getImages()
+    {
+        $query =  new ActiveQuery($this->modelClass);
+
+/*
+
+            $this->owner->hasMany($this->modelClass, ['owner_id' => 'id'])
+            ->andWhere(['entity' => $this->entity])
+            ->addOrderBy(['pos' => SORT_DESC]);*/
+
+        $query->published();
+
+        return $query;
     }
 }
