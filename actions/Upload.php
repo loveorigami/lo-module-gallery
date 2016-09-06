@@ -5,7 +5,9 @@ namespace lo\modules\gallery\actions;
 use lo\core\actions\Base;
 use lo\core\db\ActiveRecord;
 use lo\modules\gallery\behaviors\GalleryImageBehavior;
+use lo\modules\gallery\models\GalleryItem;
 use Yii;
+use yii\helpers\Json;
 use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
@@ -101,24 +103,20 @@ class Upload extends Base
     public function actionAjaxUpload()
     {
         $this->behavior->uploadFile();
-
-        //$image = $this->behavior->addImage($fileName);
-
-        return true;
+        /** @var GalleryItem $image */
+        $image = $this->behavior->loadModel();
 
         // not "application/json", because  IE8 trying to save response as a file
+        Yii::$app->response->headers->set('Content-Type', 'text/html');
 
-        //Yii::$app->response->headers->set('Content-Type', 'text/html');
-
-        /*        return Json::encode(
-                    array(
-                        'id' => $image->id,
-                        'pos' => $image->rank,
-                        'name' => (string)$image->name,
-                        'description' => (string)$image->description,
-                        //'preview' => $image->getUrl('preview'),
-                    )
-                );*/
+        return Json::encode(
+            array(
+                'id' => $image->id,
+                'pos' => $image->pos,
+                'name' => (string)$image->name,
+                'description' => (string)$image->description,
+                'preview' => $this->behavior->getThumbUploadUrl($image->image, $image::THUMB_BIG),
+            )
+        );
     }
-
 }

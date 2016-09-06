@@ -3,7 +3,9 @@
 namespace lo\modules\gallery\behaviors;
 
 use abeautifulsite\SimpleImage;
+use Exception;
 use lo\core\db\ActiveRecord;
+use lo\modules\gallery\models\GalleryItem;
 use lo\modules\gallery\repository\ImageRepositoryInterface;
 use Yii;
 use yii\base\InvalidConfigException;
@@ -14,7 +16,7 @@ use yii\helpers\FileHelper;
 
 /**
  * Behavior for adding gallery to any model.
- * @property string $galleryId
+ * @property ActiveRecord $owner
  */
 class GalleryImageBehavior extends GalleryBehavior
 {
@@ -34,7 +36,7 @@ class GalleryImageBehavior extends GalleryBehavior
      * - `quality`
      */
     public $thumbs = [
-        'thumb' => ['width' => 200, 'height' => 200, 'quality' => 90],
+        'tmb' => ['width' => 200, 'height' => 200, 'quality' => 90],
     ];
 
     /** @var string|null */
@@ -49,7 +51,7 @@ class GalleryImageBehavior extends GalleryBehavior
     /** @var string Table name for saving gallery images meta information */
     public $modelName;
 
-    /** @var ImageRepositoryInterface  $_repository */
+    /** @var ImageRepositoryInterface $_repository */
     protected $_repository;
 
     /**
@@ -63,7 +65,7 @@ class GalleryImageBehavior extends GalleryBehavior
             throw new InvalidConfigException('The "modelName" property must be set.');
         }
 
-        $this->_repository = new $repository(['modelName'=>$this->modelName]);
+        $this->_repository = new $repository(['modelName' => $this->modelName]);
     }
 
     /**
@@ -95,6 +97,14 @@ class GalleryImageBehavior extends GalleryBehavior
     }
 
     /**
+     * @param null $id
+     * @return mixed
+     */
+    public function loadModel($id = null){
+        return $this->_repository->loadModel($id);
+    }
+
+    /**
      * @inheritdoc
      */
     protected function afterUpload()
@@ -105,15 +115,34 @@ class GalleryImageBehavior extends GalleryBehavior
             $this->createThumbs();
         }
 
-        /** @var ActiveRecord $model */
+        /** @var GalleryItem $model */
         $model = $this->_repository->loadModel();
-        $model->name = $this->fileName;
-        $model->entity = $this->entity;
+        $model->name = $this->originalFileName;
 
+        $model->image = $this->fileName;
+        $model->entity = $this->entity;
+        $model->owner_id = $this->getOwnerId();
+        $model->status = $model::STATUS_PUBLISHED;
+        $this->_repository->save();
+        $model->pos = $model->id;
         $this->_repository->save();
 
     }
 
+    /**
+     * Get Gallery Id
+     * @return mixed as string or integer
+     * @throws Exception
+     */
+    protected function getOwnerId()
+    {
+        $pk = $this->owner->getPrimaryKey();
+        if (is_array($pk)) {
+            throw new Exception('Composite pk not supported');
+        } else {
+            return $pk;
+        }
+    }
 
     /**
      * @throws InvalidParamException
@@ -141,7 +170,7 @@ class GalleryImageBehavior extends GalleryBehavior
      * @param string $profile
      * @return string
      */
-    public function getThumbUploadPath($filename, $profile = 'thumb')
+    public function getThumbUploadPath($filename, $profile = 'tmb')
     {
         $path = $this->resolvePath($this->thumbPath);
         $filename = $this->getThumbFileName($filename, $profile);
@@ -154,7 +183,7 @@ class GalleryImageBehavior extends GalleryBehavior
      * @param string $profile
      * @return string|null
      */
-    public function getThumbUploadUrl($filename, $profile = 'thumb')
+    public function getThumbUploadUrl($filename, $profile = 'tmb')
     {
         $path = $this->getUploadPath($filename);
 
@@ -164,7 +193,7 @@ class GalleryImageBehavior extends GalleryBehavior
             }
 
             $url = $this->resolvePath($this->thumbUrl);
-            $thumbName = $this->getThumbFileName($profile);
+            $thumbName = $this->getThumbFileName($filename, $profile);
 
             return Yii::getAlias($url . '/' . $thumbName);
         } elseif ($this->placeholder) {
@@ -220,7 +249,6 @@ class GalleryImageBehavior extends GalleryBehavior
         return $profile . '-' . $filename;
     }
 
-
     /**
      * @param $config
      * @param $path
@@ -235,6 +263,5 @@ class GalleryImageBehavior extends GalleryBehavior
         $img = new SimpleImage($path);
         $img->thumbnail($width, $height)->save($thumbPath, $quality);
     }
-
 
 }

@@ -37,6 +37,9 @@ class GalleryBehavior extends Behavior
     /** @var string name this file */
     public $fileName;
 
+    /** @var string original name this file */
+    public $originalFileName;
+
     /** @var bool Getting file instance by name */
     public $instanceByName = true;
 
@@ -103,6 +106,7 @@ class GalleryBehavior extends Behavior
             $this->_file = UploadedFile::getInstance($model, $this->attribute);
 
             if ($this->_file instanceof UploadedFile) {
+                $this->originalFileName = $this->_file->baseName;
                 $this->_file->name = $this->getFileName($this->_file);
                 $this->fileName = $this->_file->name;
 
@@ -127,6 +131,16 @@ class GalleryBehavior extends Behavior
         $filename = $this->checkFileName($filename);
         $path = $this->resolvePath($this->path);
         return $filename ? Yii::getAlias($path . '/' . $filename) : null;
+    }
+
+    /**
+     * Returns file path for the filename.
+     * @return string|null the file path.
+     */
+    public function getPath()
+    {
+        $path = $this->resolvePath($this->path);
+        return $path ? Yii::getAlias($path) : null;
     }
 
     /**
