@@ -94,14 +94,13 @@ class ImageRepository extends Object implements ImageRepositoryInterface
     {
         $query =  new ActiveQuery($this->modelClass);
 
-/*
+        $images = $query->select('*')
+            ->where([
+                'entity' => $this->entity,
+                'owner_id' => $this->owner->id
+            ])
+            ->orderBy(['pos' => SORT_ASC])->published()->all();
 
-            $this->owner->hasMany($this->modelClass, ['owner_id' => 'id'])
-            ->andWhere(['entity' => $this->entity])
-            ->addOrderBy(['pos' => SORT_DESC]);*/
-
-        $query->published();
-
-        return $query;
+        return $images;
     }
 }
