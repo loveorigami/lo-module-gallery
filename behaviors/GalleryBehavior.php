@@ -128,7 +128,6 @@ class GalleryBehavior extends Behavior
      */
     public function getUploadPath($filename)
     {
-        $filename = $this->checkFileName($filename);
         $path = $this->resolvePath($this->path);
         return $filename ? Yii::getAlias($path . '/' . $filename) : null;
     }
@@ -150,7 +149,6 @@ class GalleryBehavior extends Behavior
      */
     public function getUploadUrl($filename)
     {
-        $filename = $this->checkFileName($filename);
         $url = $this->resolvePath($this->url);
         return $filename ? Yii::getAlias($url . '/' . $filename) : null;
     }
@@ -192,7 +190,6 @@ class GalleryBehavior extends Behavior
      */
     protected function delete($filename)
     {
-        $filename = $this->checkFileName($filename);
         $path = $this->getUploadPath($filename);
         if (is_file($path)) {
             unlink($path);
@@ -212,6 +209,25 @@ class GalleryBehavior extends Behavior
         } else {
             return $this->sanitize($file->name);
         }
+    }
+
+    /**
+     * @param $filename
+     */
+    protected function setFileName($filename)
+    {
+        $this->fileName = $filename;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getOriginalFileName()
+    {
+        if ($this->fileName === $this->originalFileName) {
+            return null;
+        }
+        return $this->originalFileName;
     }
 
     /**
@@ -235,16 +251,6 @@ class GalleryBehavior extends Behavior
     protected function generateFileName($file)
     {
         return uniqid() . '.' . $file->extension;
-    }
-
-    /**
-     * check filename if exist.
-     * @param string $filename
-     * @return string
-     */
-    protected function checkFileName($filename)
-    {
-        return $filename ? $filename : $this->fileName;
     }
 
     /**

@@ -4,12 +4,14 @@ namespace lo\modules\gallery\behaviors;
 
 use abeautifulsite\SimpleImage;
 use Exception;
+use lo\core\db\ActiveQuery;
 use lo\core\db\ActiveRecord;
 use lo\modules\gallery\models\GalleryItem;
 use lo\modules\gallery\repository\ImageRepositoryInterface;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
+use yii\base\Model;
 use yii\helpers\ArrayHelper;
 use yii\helpers\FileHelper;
 
@@ -72,11 +74,11 @@ class GalleryImageBehavior extends GalleryBehavior
     }
 
     /**
-     * @return mixed relation
+     * @return ActiveQuery relation
      */
     public function getImages()
     {
-        $this->_repository->setOwner($this->owner);
+        $this->_repository->setOwnerId($this->owner->id);
         return $this->_repository->getImages();
     }
 
@@ -110,10 +112,17 @@ class GalleryImageBehavior extends GalleryBehavior
 
     /**
      * @param null $id
-     * @return mixed
+     * @return Model
      */
-    public function loadModel($id = null){
-        return $this->_repository->loadModel($id);
+    public function setModel($id = null){
+        return $this->_repository->setModel($id);
+    }
+
+    /**
+     * @return Model
+     */
+    public function getModel(){
+        return $this->_repository->getModel();
     }
 
     /**
@@ -128,13 +137,14 @@ class GalleryImageBehavior extends GalleryBehavior
         }
 
         /** @var GalleryItem $model */
-        $model = $this->_repository->loadModel();
-        $model->name = $this->originalFileName;
+        $model = $this->_repository->setModel();
+        $model->name = $this->getOriginalFileName();
 
         $model->image = $this->fileName;
         $model->entity = $this->entity;
         $model->owner_id = $this->getOwnerId();
         $model->status = $model::STATUS_PUBLISHED;
+        $model->path = $this->path;
         $this->_repository->save();
         $model->pos = $model->id;
         $this->_repository->save();
@@ -201,10 +211,12 @@ class GalleryImageBehavior extends GalleryBehavior
 
         if (is_file($path)) {
             if ($this->createThumbsOnRequest) {
+                $this->setFileName($filename);
                 $this->createThumbs();
             }
 
             $url = $this->resolvePath($this->thumbUrl);
+			
             $thumbName = $this->getThumbFileName($filename, $profile);
 
             return Yii::getAlias($url . '/' . $thumbName);
@@ -255,9 +267,8 @@ class GalleryImageBehavior extends GalleryBehavior
      * @param string $profile
      * @return string
      */
-    protected function getThumbFileName($filename, $profile = 'thumb')
+    protected function getThumbFileName($filename, $profile = 'tmb')
     {
-        $filename = $this->checkFileName($filename);
         return $profile . '-' . $filename;
     }
 

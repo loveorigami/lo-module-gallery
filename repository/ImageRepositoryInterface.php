@@ -9,16 +9,19 @@ namespace lo\modules\gallery\repository;
 
 interface ImageRepositoryInterface
 {
-    /** @param $owner */
-    public function setOwner($owner);
+    /** @param $ownerId */
+    public function setOwnerId($ownerId);
 
-    /** @param $entity */
-    public function setEntity($entity);
+    /**
+     * @param $id
+     * @return \yii\base\Model
+     */
+    public function setModel($id = null);
 
-    /** @param $modelClass */
-    public function setModelClass($modelClass);
-
-    public function loadModel($id = null);
+    /**
+     * @return \yii\base\Model
+     */
+    public function getModel();
 
     public function getImages();
 

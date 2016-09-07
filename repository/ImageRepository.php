@@ -16,34 +16,41 @@ use yii\web\NotFoundHttpException;
 class ImageRepository extends Object implements ImageRepositoryInterface
 {
     /** @var string */
-    protected $modelClass;
+    public $modelClass;
 
     /** @var string */
-    protected $entity;
+    public $entity;
 
-    /** @var ActiveRecord $owner */
-    protected $owner;
+    /** @var string */
+    protected $ownerId;
 
     /** @var ActiveRecord $model */
     protected $model;
-
-    public function loadModel($id = null)
-    {
-        if (!$this->model) {
-            if (!$id) {
-                return $this->model = new $this->modelClass;
-            } else {
-                return $this->model = $this->findModel($id);
-            }
-        }
-        return $this->model;
-    }
-
 
     public function save()
     {
         if (!$this->model->save()) {
             print_r($this->model->errors);
+        }
+    }
+
+    /**
+     * @return ActiveRecord
+     */
+    public function getModel(){
+        return $this->model;
+    }
+
+    /**
+     * @param null $id
+     * @return ActiveRecord|Model
+     */
+    public function setModel($id = null)
+    {
+        if (!$id) {
+            return $this->model = new $this->modelClass;
+        } else {
+            return $this->model = $this->findModel($id);
         }
     }
 
@@ -64,27 +71,11 @@ class ImageRepository extends Object implements ImageRepositoryInterface
     }
 
     /**
-     * @param $owner
+     * @param $ownerId
      */
-    public function setOwner($owner)
+    public function setOwnerId($ownerId)
     {
-        $this->owner = $owner;
-    }
-
-    /**
-     * @param $entity
-     */
-    public function setEntity($entity)
-    {
-        $this->entity = $entity;
-    }
-
-    /**
-     * @param $modelClass
-     */
-    public function setModelClass($modelClass)
-    {
-        $this->modelClass = $modelClass;
+        $this->ownerId = $ownerId;
     }
 
     /**
@@ -92,15 +83,17 @@ class ImageRepository extends Object implements ImageRepositoryInterface
      */
     public function getImages()
     {
-        $query =  new ActiveQuery($this->modelClass);
+        $model = $this->modelClass;
+        /** @var ActiveRecord $model */
+        $query = $model::find();
 
-        $images = $query->select('*')
+        $query->select('*')
             ->where([
                 'entity' => $this->entity,
-                'owner_id' => $this->owner->id
+                'owner_id' => $this->ownerId
             ])
-            ->orderBy(['pos' => SORT_ASC])->published()->all();
+            ->orderBy(['pos' => SORT_ASC]);
 
-        return $images;
+        return $query;
     }
 }

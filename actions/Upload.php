@@ -104,7 +104,7 @@ class Upload extends Base
     {
         $this->behavior->uploadFile();
         /** @var GalleryItem $image */
-        $image = $this->behavior->loadModel();
+        $image = $this->behavior->getModel();
 
         // not "application/json", because  IE8 trying to save response as a file
         Yii::$app->response->headers->set('Content-Type', 'text/html');

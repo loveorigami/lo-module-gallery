@@ -13,6 +13,7 @@ use lo\core\db\ActiveRecord;
  * @property string $image
  * @property string $owner_id
  * @property string $description
+ * @property string $path
  * @property integer $status
  * @property integer $pos
  * @property integer $created_at
