@@ -23,7 +23,20 @@ interface ImageRepositoryInterface
      */
     public function getModel();
 
+    /**
+     * query find()
+     * @return \lo\core\db\ActiveQuery
+     */
     public function getImages();
+
+    /**
+     * Сортировка
+     * @param array $order
+     * @return array
+     */
+    public function reOrder($order);
+
+
 
     public function save();
 }

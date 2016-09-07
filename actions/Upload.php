@@ -8,6 +8,7 @@ use lo\modules\gallery\behaviors\GalleryImageBehavior;
 use lo\modules\gallery\models\GalleryItem;
 use Yii;
 use yii\helpers\Json;
+use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
@@ -72,6 +73,9 @@ class Upload extends Base
                 'ajaxUpload':
                     return $this->actionAjaxUpload();
                     break;
+                case 'order':
+                    return $this->actionOrder(Yii::$app->request->post('order'));
+                    break;
 
                 /*                case 'changeData':
                                     return $this->actionChangeData(Yii::$app->request->post('photo'));
@@ -109,14 +113,31 @@ class Upload extends Base
         // not "application/json", because  IE8 trying to save response as a file
         Yii::$app->response->headers->set('Content-Type', 'text/html');
 
-        return Json::encode(
-            array(
-                'id' => $image->id,
-                'pos' => $image->pos,
-                'name' => (string)$image->name,
-                'description' => (string)$image->description,
-                'preview' => $this->behavior->getThumbUploadUrl($image->image, $image::THUMB_BIG),
-            )
-        );
+        return Json::encode([
+            'id' => $image->id,
+            'pos' => $image->pos,
+            'name' => (string)$image->name,
+            'description' => (string)$image->description,
+            'preview' => $this->behavior->getThumbUploadUrl($image->image, $image::THUMB_BIG),
+        ]);
+    }
+
+    /**
+     * Saves images order according to request.
+     * Variable $_POST['order'] - new arrange of image ids, to be saved
+     * @param $order
+     * @return string
+     * @throws BadRequestHttpException
+     */
+    public function actionOrder($order)
+    {
+        if (count($order) == 0) {
+            throw new BadRequestHttpException('No data, to save');
+        }
+
+        $res = $this->behavior->reOrder($order);
+        Yii::$app->session->setFlash('success', 'Reorder success');
+
+        return Json::encode($res);
     }
 }

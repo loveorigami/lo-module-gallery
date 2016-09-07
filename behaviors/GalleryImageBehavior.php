@@ -126,6 +126,14 @@ class GalleryImageBehavior extends GalleryBehavior
     }
 
     /**
+     * @param array $order
+     * @return array
+     */
+    public function reOrder($order){
+        return $this->_repository->reOrder($order);
+    }
+
+    /**
      * @inheritdoc
      */
     protected function afterUpload()

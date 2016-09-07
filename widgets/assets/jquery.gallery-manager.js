@@ -95,11 +95,11 @@
             + '</div>';
 
 
-        function addPhoto(id, src, name, description, rank) {
+        function addPhoto(id, src, name, description, pos) {
             var photo = $(photoTemplate);
             photos[id] = photo;
             photo.data('id', id);
-            photo.data('rank', rank);
+            photo.data('pos', pos);
 
             $('img', photo).attr('src', src);
             if (opts.hasName) {
@@ -196,7 +196,7 @@
             var data = [];
             $('.photo', $sorter).each(function () {
                 var t = $(this);
-                data.push('order[' + t.data('id') + ']=' + t.data('rank'));
+                data.push('order[' + t.data('id') + ']=' + t.data('pos'));
             });
             $.ajax({
                 type: 'POST',
@@ -205,7 +205,7 @@
                 dataType: "json"
             }).done(function (data) {
                 for (var id in data[id]) {
-                    photos[id].data('rank', data[id]);
+                    photos[id].data('pos', data[id]);
                 }
                 // order saved!
                 // we can inform user that order saved
@@ -236,7 +236,7 @@
                         uploadedCount++;
                         if (this.status == 200) {
                             var resp = JSON.parse(this.response);
-                            addPhoto(resp['id'], resp['preview'], resp['name'], resp['description'], resp['rank']);
+                            addPhoto(resp['id'], resp['preview'], resp['name'], resp['description'], resp['pos']);
                             ids.push(resp['id']);
                         } else {
                             // exception !!!
@@ -327,7 +327,7 @@
                     processData: false,
                     dataType: "json"
                 }).done(function (resp) {
-                    addPhoto(resp['id'], resp['preview'], resp['name'], resp['description'], resp['rank']);
+                    addPhoto(resp['id'], resp['preview'], resp['name'], resp['description'], resp['pos']);
                     ids.push(resp['id']);
                     $uploadProgress.css('width', '100%');
                     $progressOverlay.hide();
@@ -396,7 +396,7 @@
 
         for (var i = 0, l = opts.photos.length; i < l; i++) {
             var resp = opts.photos[i];
-            addPhoto(resp['id'], resp['preview'], resp['name'], resp['description'], resp['rank']);
+            addPhoto(resp['id'], resp['preview'], resp['name'], resp['description'], resp['pos']);
         }
     }
 

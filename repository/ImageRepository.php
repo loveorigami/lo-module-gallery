@@ -4,6 +4,8 @@ namespace lo\modules\gallery\repository;
 
 use lo\core\db\ActiveQuery;
 use lo\core\db\ActiveRecord;
+use lo\modules\gallery\models\GalleryItem;
+use Yii;
 use yii\base\Model;
 use yii\base\Object;
 use yii\web\NotFoundHttpException;
@@ -95,5 +97,46 @@ class ImageRepository extends Object implements ImageRepositoryInterface
             ->orderBy(['pos' => SORT_ASC]);
 
         return $query;
+    }
+
+    /**
+     * @param array $order
+     * @return array
+     */
+    public function reOrder($order)
+    {
+        /** @var GalleryItem $model */
+        $model = $this->modelClass;
+
+        $orders = [];
+        $i = 0;
+
+        foreach ($order as $k => $v) {
+            if (!$v) {
+                $order[$k] = $k;
+            }
+            $orders[] = $order[$k];
+            $i++;
+        }
+
+        sort($orders);
+
+        $i = 0;
+        $res = [];
+
+        foreach ($order as $k => $v) {
+            $res[$k] = $orders[$i];
+
+            Yii::$app->db->createCommand()
+                ->update(
+                    $model::tableName(),
+                    ['pos' => $orders[$i]],
+                    ['id' => $k]
+                )->execute();
+
+            $i++;
+        }
+
+        return $order;
     }
 }

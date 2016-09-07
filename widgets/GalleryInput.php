@@ -2,7 +2,8 @@
 
 namespace lo\modules\gallery\widgets;
 
-use lo\modules\gallery\behaviors\GalleryBehavior;
+use lo\modules\gallery\behaviors\GalleryImageBehavior;
+use lo\modules\gallery\models\GalleryItem;
 use Yii;
 use yii\base\Exception;
 use yii\db\ActiveRecord;
@@ -24,7 +25,7 @@ class GalleryInput extends InputWidget
     /** @var string */
     public $galleryBehavior;
 
-    /** @var GalleryBehavior Model of gallery to manage */
+    /** @var GalleryImageBehavior Model of gallery to manage */
     private $behavior;
 
     /** @var string Route to gallery controller */
@@ -64,15 +65,16 @@ class GalleryInput extends InputWidget
         }
 
         $images = [];
-        /*        foreach ($this->behavior->getImages() as $image) {
-                    $images[] = array(
-                        'id' => $image->id,
-                        'rank' => $image->rank,
-                        'name' => (string)$image->name,
-                        'description' => (string)$image->description,
-                        'preview' => $image->getUrl('preview'),
-                    );
-                }*/
+        foreach ($this->behavior->getImages()->all() as $image) {
+            /** @var GalleryItem $image */
+            $images[] = [
+                'id' => $image->id,
+                'pos' => $image->pos,
+                'name' => (string)$image->name,
+                'description' => (string)$image->description,
+                'preview' => $this->behavior->getThumbUploadUrl($image->image, $image::THUMB_BIG),
+            ];
+        }
 
         $baseUrl = [
             $this->apiRoute,
