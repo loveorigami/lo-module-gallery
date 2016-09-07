@@ -36,6 +36,11 @@ class ImageRepository extends Object implements ImageRepositoryInterface
         }
     }
 
+
+    public function delete(){
+        $this->model->delete();
+    }
+
     /**
      * @return ActiveRecord
      */

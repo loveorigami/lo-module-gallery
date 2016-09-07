@@ -7,6 +7,12 @@
  */
 namespace lo\modules\gallery\repository;
 
+/**
+ * Interface ImageRepositoryInterface
+ * @package lo\modules\gallery\repository
+ * @param $id
+ * @param image
+ */
 interface ImageRepositoryInterface
 {
     /** @param $ownerId */
@@ -36,7 +42,11 @@ interface ImageRepositoryInterface
      */
     public function reOrder($order);
 
-
+    /**
+     * удаление
+     * @return boolean
+     */
+    public function delete();
 
     public function save();
 }

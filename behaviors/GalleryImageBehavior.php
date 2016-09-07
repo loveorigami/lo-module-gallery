@@ -134,6 +134,17 @@ class GalleryImageBehavior extends GalleryBehavior
     }
 
     /**
+     * @param $ids
+     */
+    public function deleteImages($ids){
+        foreach($ids as $id){
+            $model = $this->setModel($id);
+            $this->delete($model->image);
+            $this->_repository->delete();
+        }
+    }
+
+    /**
      * @inheritdoc
      */
     protected function afterUpload()

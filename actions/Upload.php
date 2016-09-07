@@ -65,37 +65,42 @@ class Upload extends Base
 
             switch ($action) {
                 case 'delete':
-                    //return $this->actionDelete(Yii::$app->request->post('id'));
-                    return 1;
+                    return $this->delete(Yii::$app->request->post('id'));
                     break;
-
                 case
                 'ajaxUpload':
-                    return $this->actionAjaxUpload();
+                    return $this->ajaxUpload();
                     break;
                 case 'order':
-                    return $this->actionOrder(Yii::$app->request->post('order'));
+                    return $this->reOrder(Yii::$app->request->post('order'));
                     break;
 
                 /*                case 'changeData':
                                     return $this->actionChangeData(Yii::$app->request->post('photo'));
 
-                                case 'order':
-                                    return $this->actionOrder(Yii::$app->request->post('order'));
+
 
                                 default:
                                     throw new BadRequestHttpException('Action do not exists');*/
             }
 
-            /*            if (!Yii::$app->user->can($this->access(), array("model" => $model)))
-                            throw new ForbiddenHttpException('Forbidden');*/
-
-            //$model->setScenario($this->modelScenario);
-
-            //return $model->save();
         }
 
         return false;
+    }
+
+    /**
+     * Removes image with ids specified in post request.
+     * On success returns 'OK'
+     * @param $ids
+     * @throws HttpException
+     * @return string
+     */
+    private function delete($ids)
+    {
+        $this->behavior->deleteImages($ids);
+        Yii::$app->session->setFlash('success', 'Delete success');
+        return 'OK';
     }
 
     /**
@@ -104,7 +109,7 @@ class Upload extends Base
      * @return string
      * @throws HttpException
      */
-    public function actionAjaxUpload()
+    private function ajaxUpload()
     {
         $this->behavior->uploadFile();
         /** @var GalleryItem $image */
@@ -129,7 +134,7 @@ class Upload extends Base
      * @return string
      * @throws BadRequestHttpException
      */
-    public function actionOrder($order)
+    private function reOrder($order)
     {
         if (count($order) == 0) {
             throw new BadRequestHttpException('No data, to save');
