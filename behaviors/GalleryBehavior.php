@@ -225,7 +225,6 @@ class GalleryBehavior extends Behavior
     protected function getOriginalFileName()
     {
         //$filename = pathinfo($this->fileName, PATHINFO_FILENAME);
-
         return $this->originalFileName;
     }
 

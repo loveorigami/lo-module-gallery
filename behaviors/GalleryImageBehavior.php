@@ -6,7 +6,6 @@ use abeautifulsite\SimpleImage;
 use Exception;
 use lo\core\db\ActiveQuery;
 use lo\core\db\ActiveRecord;
-use lo\modules\gallery\models\GalleryItem;
 use lo\modules\gallery\repository\ImageRepositoryInterface;
 use Yii;
 use yii\base\InvalidConfigException;
@@ -74,15 +73,6 @@ class GalleryImageBehavior extends GalleryBehavior
     }
 
     /**
-     * @return ActiveQuery relation
-     */
-    public function getImages()
-    {
-        $this->_repository->setOwnerId($this->owner->id);
-        return $this->_repository->getImages();
-    }
-
-    /**
      * @inheritdoc
      */
     public function init()
@@ -108,6 +98,15 @@ class GalleryImageBehavior extends GalleryBehavior
                 }
             }
         }
+    }
+
+    /**
+     * @return ActiveQuery relation
+     */
+    public function getImages()
+    {
+        $this->_repository->setOwnerId($this->owner->id);
+        return $this->_repository->getImages();
     }
 
     /**
@@ -155,7 +154,10 @@ class GalleryImageBehavior extends GalleryBehavior
             $this->createThumbs();
         }
 
-        /** @var GalleryItem $model */
+        /**
+         * @var ImageRepositoryInterface $model
+         * @const STATUS_PUBLISHED
+         */
         $model = $this->_repository->setModel();
         $model->name = $this->getOriginalFileName();
 

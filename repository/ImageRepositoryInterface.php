@@ -10,8 +10,18 @@ namespace lo\modules\gallery\repository;
 /**
  * Interface ImageRepositoryInterface
  * @package lo\modules\gallery\repository
- * @param $id
- * @param image
+ * @const STATUS_PUBLISHED
+ * @property integer $id
+ * @property string $name
+ * @property string $entity
+ * @property string $image
+ * @property string $owner_id
+ * @property string $description
+ * @property string $path
+ * @property integer $status
+ * @property integer $pos
+ * @property integer $created_at
+ * @property integer $updated_at
  */
 interface ImageRepositoryInterface
 {
