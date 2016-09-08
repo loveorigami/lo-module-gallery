@@ -196,7 +196,7 @@
             var data = [];
             $('.photo', $sorter).each(function () {
                 var t = $(this);
-                data.push('order[' + t.data('id') + ']=' + t.data('pos'));
+                data.push('order[]=' + t.data('id'));
             });
             $.ajax({
                 type: 'POST',
