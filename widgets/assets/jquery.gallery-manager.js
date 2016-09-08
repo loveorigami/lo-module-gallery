@@ -58,22 +58,22 @@
                 '<div class="col-xs-8">' +
                 (opts.hasName
                     ?
-                    '<div class="form-group">' +
-                    '<label class="control-label" for="photo_name_' + id + '">' + opts.nameLabel + ':</label>' +
-                    '<input class="form-control" type="text" name="photo[' + id + '][name]" class="input-xlarge" value="' + htmlEscape(name) + '" id="photo_name_' + id + '"/>' +
-                    '</div>' : '') +
+                '<div class="form-group">' +
+                '<label class="control-label" for="photo_name_' + id + '">' + opts.nameLabel + ':</label>' +
+                '<input class="form-control" type="text" name="photo[' + id + '][name]" class="input-xlarge" value="' + htmlEscape(name) + '" id="photo_name_' + id + '"/>' +
+                '</div>' : '') +
                 (opts.hasDesc
                     ?
-                    '<div class="form-group">' +
-                    '<label class="control-label" for="photo_description_' + id + '">' + opts.descriptionLabel + ':</label>' +
-                    '<textarea class="form-control" name="photo[' + id + '][description]" rows="3" cols="40" class="input-xlarge" id="photo_description_' + id + '">' + htmlEscape(description) + '</textarea>' +
-                    '</div>' : '') +
+                '<div class="form-group">' +
+                '<label class="control-label" for="photo_description_' + id + '">' + opts.descriptionLabel + ':</label>' +
+                '<textarea class="form-control" name="photo[' + id + '][description]" rows="3" cols="40" class="input-xlarge" id="photo_description_' + id + '">' + htmlEscape(description) + '</textarea>' +
+                '</div>' : '') +
                 '</div>' +
                 '</div>';
             return $(html);
         }
 
-        var photoTemplate = '<div class="photo col-md-3 col-sm-6 col-xs-12">' 
+        var photoTemplate = '<div class="photo col-md-2 col-sm-6 col-xs-12">'
             + '<div class="image-preview"><img src=""/></div>'
             + '<div class="caption">';
         if (opts.hasName) {
@@ -84,7 +84,7 @@
         }
         photoTemplate += '</div>'
             + '<div class="wrap-actions">'
-                + '<div class="actions pull-right btn-group">';
+            + '<div class="actions pull-right btn-group">';
         if (opts.hasName || opts.hasDesc) {
             photoTemplate += '<span class="edit-photo btn btn-primary btn-xs"><i class="glyphicon glyphicon-pencil glyphicon-white"></i></span>';
         }
@@ -154,7 +154,7 @@
             var photo = $(this).closest('.photo');
             var id = photo.data('id');
             // here can be question to confirm delete
-            // if (!confirm(deleteConfirmation)) return false;
+            if (!confirm('Действительно удалить?')) return false;
             removePhotos([id]);
             return false;
         }
@@ -246,8 +246,9 @@
                         if (uploadedCount === filesCount) {
                             $uploadProgress.css('width', '100%');
                             $progressOverlay.hide();
-                            if (opts.hasName || opts.hasDesc)
-                                editPhotos(ids);
+                            if (opts.hasName || opts.hasDesc) {
+                                //editPhotos(ids);
+                            }
                         }
                     };
                     xhr.send(fd);
@@ -316,8 +317,10 @@
                 $uploadProgress.css('width', '5%');
 
                 var data = {};
-                if (opts.csrfToken)
+                if (opts.csrfToken) {
                     data[opts.csrfTokenName] = opts.csrfToken;
+                }
+
                 $.ajax({
                     type: 'POST',
                     url: opts.uploadUrl,
@@ -331,8 +334,9 @@
                     ids.push(resp['id']);
                     $uploadProgress.css('width', '100%');
                     $progressOverlay.hide();
-                    if (opts.hasName || opts.hasDesc)
+                    if (opts.hasName || opts.hasDesc) {
                         editPhotos(ids);
+                    }
                 });
             });
         }
@@ -373,12 +377,12 @@
 
         $('.remove-selected', $gallery).click(function (e) {
             e.preventDefault();
+            if (!confirm('Действительно удалить?')) return false;
             var ids = [];
             $('.photo.selected', $sorter).each(function () {
                 ids.push($(this).data('id'));
             });
             removePhotos(ids);
-
         });
 
         $('.select_all', $gallery).change(function () {

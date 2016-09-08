@@ -9,7 +9,7 @@ class GalleryInputAsset extends AssetBundle
 
     public $js = [
         'jquery.iframe-transport.min.js',
-        'jquery.gallery-manager.min.js',
+        'jquery.gallery-manager.js',
     ];
 
     public $css = [

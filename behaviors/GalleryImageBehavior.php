@@ -156,7 +156,6 @@ class GalleryImageBehavior extends GalleryBehavior
 
         /**
          * @var ImageRepositoryInterface $model
-         * @const STATUS_PUBLISHED
          */
         $model = $this->_repository->setModel();
         $model->name = $this->getOriginalFileName();
@@ -164,8 +163,8 @@ class GalleryImageBehavior extends GalleryBehavior
         $model->image = $this->fileName;
         $model->entity = $this->entity;
         $model->owner_id = $this->getOwnerId();
-        $model->status = $model::STATUS_PUBLISHED;
-        $model->path = $this->path;
+        $model->status = $this->_repository->getDefaultStatus();
+        $model->path = $this->resolvePath($this->path);
         $this->_repository->save();
         $model->pos = $model->id;
         $this->_repository->save();
@@ -273,7 +272,14 @@ class GalleryImageBehavior extends GalleryBehavior
     protected function delete($filename)
     {
         parent::delete($filename);
+        $this->deleteThumbs($filename);
+    }
 
+    /**
+     * @inheritdoc
+     */
+    protected function deleteThumbs($filename)
+    {
         $profiles = array_keys($this->thumbs);
         foreach ($profiles as $profile) {
             $path = $this->getThumbUploadPath($filename, $profile);

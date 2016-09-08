@@ -46,6 +46,11 @@ interface ImageRepositoryInterface
     public function getImages();
 
     /**
+     * @return boolean
+     */
+    public function getDefaultStatus();
+
+    /**
      * Сортировка
      * @param array $order
      * @return array

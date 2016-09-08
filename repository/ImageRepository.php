@@ -26,7 +26,7 @@ class ImageRepository extends Object implements ImageRepositoryInterface
     /** @var string */
     protected $ownerId;
 
-    /** @var ActiveRecord $model */
+    /** @var GalleryItem $model */
     protected $model;
 
     public function save()
@@ -37,14 +37,16 @@ class ImageRepository extends Object implements ImageRepositoryInterface
     }
 
 
-    public function delete(){
+    public function delete()
+    {
         $this->model->delete();
     }
 
     /**
      * @return ActiveRecord
      */
-    public function getModel(){
+    public function getModel()
+    {
         return $this->model;
     }
 
@@ -86,12 +88,21 @@ class ImageRepository extends Object implements ImageRepositoryInterface
     }
 
     /**
+     * @return boolean
+     */
+    public function getDefaultStatus()
+    {
+        $model = $this->model;
+        return $model::STATUS_PUBLISHED;
+    }
+
+    /**
      * @return ActiveQuery relation
      */
     public function getImages()
     {
         $model = $this->modelClass;
-        /** @var ActiveRecord $model */
+        /** @var GalleryItem $model */
         $query = $model::find();
 
         $query->select('*')
@@ -113,33 +124,14 @@ class ImageRepository extends Object implements ImageRepositoryInterface
         /** @var GalleryItem $model */
         $model = $this->modelClass;
 
-        $orders = [];
-        $i = 0;
-
-        foreach ($order as $k => $v) {
-            if (!$v) {
-                $order[$k] = $k;
-            }
-            $orders[] = $order[$k];
-            $i++;
-        }
-
-        sort($orders);
-
-        $i = 0;
-        $res = [];
-
-        foreach ($order as $k => $v) {
-            $res[$k] = $orders[$i];
+        foreach ($order as $pos => $id) {
 
             Yii::$app->db->createCommand()
                 ->update(
                     $model::tableName(),
-                    ['pos' => $orders[$i]],
-                    ['id' => $k]
+                    ['pos' => $pos],
+                    ['id' => $id]
                 )->execute();
-
-            $i++;
         }
 
         return $order;
