@@ -136,4 +136,46 @@ class ImageRepository extends Object implements ImageRepositoryInterface
 
         return $order;
     }
+
+    /**
+     * @param $imagesData
+     * @return array
+     */
+    public function updateData($imagesData)
+    {
+        $imageIds = array_keys($imagesData);
+
+        $model = $this->modelClass;
+        /** @var GalleryItem $model */
+        $query = $model::find();
+
+        $imagesToUpdate = $query->select(['id', 'name', 'description', 'pos'])
+            ->where([
+                'entity' => $this->entity,
+                'owner_id' => $this->ownerId
+            ])
+            ->andWhere(['in', 'id', $imageIds])
+            ->orderBy(['pos' => SORT_ASC])
+            ->all();
+
+        /** @var GalleryItem $image */
+        foreach ($imagesToUpdate as $image) {
+
+            if (isset($imagesData[$image->id]['name'])) {
+                $image->name = $imagesData[$image->id]['name'];
+            }
+            if (isset($imagesData[$image->id]['description'])) {
+                $image->description = $imagesData[$image->id]['description'];
+            }
+
+            Yii::$app->db->createCommand()
+                ->update(
+                    $model::tableName(),
+                    ['name' => $image->name, 'description' => $image->description],
+                    ['id' => $image->id]
+                )->execute();
+        }
+
+        return $imagesToUpdate;
+    }
 }

@@ -105,7 +105,7 @@ class GalleryImageBehavior extends GalleryBehavior
      */
     public function getImages()
     {
-        $this->_repository->setOwnerId($this->owner->id);
+        $this->_repository->setOwnerId($this->getOwnerId());
         return $this->_repository->getImages();
     }
 
@@ -169,6 +169,16 @@ class GalleryImageBehavior extends GalleryBehavior
         $model->pos = $model->id;
         $this->_repository->save();
 
+    }
+
+    /**
+     * @param array $imagesData
+     * @return array
+     */
+    public function updateImagesData($imagesData)
+    {
+        $this->_repository->setOwnerId($this->getOwnerId());
+        return $this->_repository->updateData($imagesData);
     }
 
     /**

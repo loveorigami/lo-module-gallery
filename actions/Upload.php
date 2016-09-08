@@ -64,24 +64,26 @@ class Upload extends Base
             //$this->owner->save();
 
             switch ($action) {
+
                 case 'delete':
                     return $this->delete(Yii::$app->request->post('id'));
                     break;
                 case
+
                 'ajaxUpload':
                     return $this->ajaxUpload();
                     break;
+
                 case 'order':
                     return $this->reOrder(Yii::$app->request->post('order'));
                     break;
 
-                /*                case 'changeData':
-                                    return $this->actionChangeData(Yii::$app->request->post('photo'));
+                case 'changeData':
+                    return $this->changeData(Yii::$app->request->post('photo'));
+                    break;
 
-
-
-                                default:
-                                    throw new BadRequestHttpException('Action do not exists');*/
+                default:
+                    throw new BadRequestHttpException('Action do not exists');
             }
 
         }
@@ -125,6 +127,38 @@ class Upload extends Base
             'description' => (string)$image->description,
             'preview' => $this->behavior->getThumbUploadUrl($image->image, $image::THUMB_BIG),
         ]);
+    }
+
+    /**
+     * Method to update images name/description via AJAX.
+     * On success returns JSON array od objects with new image info.
+     *
+     * @param $imagesData
+     *
+     * @throws HttpException
+     * @return string
+     */
+    public function changeData($imagesData)
+    {
+        if (count($imagesData) == 0) {
+            throw new BadRequestHttpException('Nothing to save');
+        }
+
+        $images = $this->behavior->updateImagesData($imagesData);
+
+        $resp = [];
+
+        foreach ($images as $image) {
+            $resp[] = [
+                'id' => $image->id,
+                'pos' => $image->pos,
+                'name' => (string)$image->name,
+                'description' => (string)$image->description,
+                'preview' => $this->behavior->getThumbUploadUrl($image->image, $image::THUMB_BIG),
+            ];
+        }
+
+        return Json::encode($resp);
     }
 
     /**

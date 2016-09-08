@@ -64,4 +64,10 @@ interface ImageRepositoryInterface
     public function delete();
 
     public function save();
+
+    /**
+     * @param $imagesData
+     * @return array
+     */
+    public function updateData($imagesData);
 }
