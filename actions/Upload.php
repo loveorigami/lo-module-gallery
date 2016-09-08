@@ -158,6 +158,8 @@ class Upload extends Base
             ];
         }
 
+        Yii::$app->session->setFlash('success', 'Update success');
+
         return Json::encode($resp);
     }
 
