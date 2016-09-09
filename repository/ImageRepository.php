@@ -149,7 +149,7 @@ class ImageRepository extends Object implements ImageRepositoryInterface
         /** @var GalleryItem $model */
         $query = $model::find();
 
-        $imagesToUpdate = $query->select(['id', 'name', 'description', 'pos'])
+        $imagesToUpdate = $query->select(['id', 'name', 'image', 'description', 'pos'])
             ->where([
                 'entity' => $this->entity,
                 'owner_id' => $this->ownerId

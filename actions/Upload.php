@@ -37,10 +37,10 @@ class Upload extends Base
     private $owner;
 
     /**
-     * Запуск действия
      * @param $action
-     * @return boolean
-     * @throws ForbiddenHttpException | NotFoundHttpException
+     * @return bool|string
+     * @throws BadRequestHttpException
+     * @throws NotFoundHttpException
      */
     public function run($action)
     {
@@ -60,11 +60,7 @@ class Upload extends Base
             $this->owner->setScenario($this->modelScenario);
             $this->behavior = $this->owner->getBehavior($this->galleryBehavior);
 
-
-            //$this->owner->save();
-
             switch ($action) {
-
                 case 'delete':
                     return $this->delete(Yii::$app->request->post('id'));
                     break;

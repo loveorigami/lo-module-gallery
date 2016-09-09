@@ -13,6 +13,7 @@ use yii\base\InvalidParamException;
 use yii\base\Model;
 use yii\helpers\ArrayHelper;
 use yii\helpers\FileHelper;
+use yii\web\UploadedFile;
 
 
 /**
@@ -113,14 +114,16 @@ class GalleryImageBehavior extends GalleryBehavior
      * @param null $id
      * @return Model
      */
-    public function setModel($id = null){
+    public function setModel($id = null)
+    {
         return $this->_repository->setModel($id);
     }
 
     /**
      * @return Model
      */
-    public function getModel(){
+    public function getModel()
+    {
         return $this->_repository->getModel();
     }
 
@@ -128,15 +131,17 @@ class GalleryImageBehavior extends GalleryBehavior
      * @param array $order
      * @return array
      */
-    public function reOrder($order){
+    public function reOrder($order)
+    {
         return $this->_repository->reOrder($order);
     }
 
     /**
      * @param $ids
      */
-    public function deleteImages($ids){
-        foreach($ids as $id){
+    public function deleteImages($ids)
+    {
+        foreach ($ids as $id) {
             $model = $this->setModel($id);
             $this->delete($model->image);
             $this->_repository->delete();
@@ -178,7 +183,9 @@ class GalleryImageBehavior extends GalleryBehavior
     public function updateImagesData($imagesData)
     {
         $this->_repository->setOwnerId($this->getOwnerId());
-        return $this->_repository->updateData($imagesData);
+        $updateData = $this->_repository->updateData($imagesData);
+        $this->renameImages($imagesData, $updateData);
+        return $updateData;
     }
 
     /**
@@ -246,7 +253,7 @@ class GalleryImageBehavior extends GalleryBehavior
             }
 
             $url = $this->resolvePath($this->thumbUrl);
-			
+
             $thumbName = $this->getThumbFileName($filename, $profile);
 
             return Yii::getAlias($url . '/' . $thumbName);
@@ -295,6 +302,28 @@ class GalleryImageBehavior extends GalleryBehavior
             $path = $this->getThumbUploadPath($filename, $profile);
             if (is_file($path)) {
                 unlink($path);
+            }
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function renameImages($old, $new)
+    {
+        $model = $this->owner;
+        foreach ($new as $img) {
+            if (isset($old[$img->id])) {
+
+                $old_name = pathinfo($old[$img->id]['image'], PATHINFO_BASENAME);
+                $model->{$this->attribute} = $old_name;
+
+                //$file = UploadedFile::getInstance($model, $this->attribute);
+//print_r($file);
+                //$file = UploadedFile::getInstanceByName($img->image);
+                $new_name = $this->getFileName($img->image);
+                //$new_name = $img->image;
+                echo $new_name;
             }
         }
     }

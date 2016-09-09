@@ -49,6 +49,7 @@ class GalleryBehavior extends Behavior
      * @see self::generateFileName()
      */
     public $generateNewName = true;
+    public $generateNextName = true;
 
     /** @var boolean If `true` current attribute file will be deleted */
     public $unlinkOnSave = true;

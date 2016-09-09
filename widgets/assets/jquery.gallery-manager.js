@@ -56,6 +56,7 @@
                 '<img src="' + htmlEscape(src) + '"  style="max-width:100%;">' +
                 '</div>' +
                 '<div class="col-xs-8">' +
+                '<input  type="hidden" name="photo[' + id + '][image]"  value="' + htmlEscape(src) + '" id="photo_src_' + id + '"/>' +
                 (opts.hasName
                     ?
                 '<div class="form-group">' +
