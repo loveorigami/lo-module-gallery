@@ -6,6 +6,7 @@
  * Time: 10:40
  */
 namespace lo\modules\gallery\repository;
+use lo\core\db\ActiveRecord;
 
 /**
  * Interface ImageRepositoryInterface
@@ -46,6 +47,12 @@ interface ImageRepositoryInterface
     public function getImages();
 
     /**
+     * @param ActiveRecord $model
+     * @return array
+     */
+    public function getImagePathInfo($model);
+
+    /**
      * @return boolean
      */
     public function getDefaultStatus();
@@ -59,10 +66,12 @@ interface ImageRepositoryInterface
 
     /**
      * удаление
-     * @return boolean
      */
     public function delete();
 
+    /**
+     * сохранение
+     */
     public function save();
 
     /**

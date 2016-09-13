@@ -9,7 +9,6 @@ use lo\modules\gallery\models\GalleryItem;
 use Yii;
 use yii\helpers\Json;
 use yii\web\BadRequestHttpException;
-use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 

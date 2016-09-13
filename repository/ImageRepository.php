@@ -29,14 +29,20 @@ class ImageRepository extends Object implements ImageRepositoryInterface
     /** @var GalleryItem $model */
     protected $model;
 
+    /**
+     * save item
+     */
     public function save()
     {
         if (!$this->model->save()) {
             print_r($this->model->errors);
         }
+        return true;
     }
 
-
+    /**
+     * delete item
+     */
     public function delete()
     {
         $this->model->delete();
@@ -113,6 +119,24 @@ class ImageRepository extends Object implements ImageRepositoryInterface
             ->orderBy(['pos' => SORT_ASC]);
 
         return $query;
+    }
+
+    /**
+     * @param GalleryItem $model
+     * @return array
+     */
+    public function getImagePathInfo($model)
+    {
+        if(!$model) return null;
+
+        $file = pathinfo($model->image);
+
+        if ($model->name){
+            $file['filename'] = $model->name.'.'.$file['extension'];
+        } else {
+            $file['basename'] = null;
+        }
+        return $file;
     }
 
     /**

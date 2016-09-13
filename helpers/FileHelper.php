@@ -1,6 +1,9 @@
 <?php
 
 namespace lo\modules\gallery\helpers;
+use lo\core\db\ActiveRecord;
+use lo\modules\gallery\behaviors\GalleryImageBehavior;
+use yii\web\UploadedFile;
 
 /**
  * Class FileHelper

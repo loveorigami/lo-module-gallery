@@ -225,8 +225,18 @@ class GalleryBehavior extends Behavior
      */
     protected function getOriginalFileName()
     {
-        //$filename = pathinfo($this->fileName, PATHINFO_FILENAME);
         return $this->originalFileName;
+    }
+
+    /**
+     * @param $old
+     * @param $new
+     */
+    protected function renameFile($old, $new)
+    {
+        $old_filenane = $this->getUploadPath($old);
+        $new_filenane = $this->getUploadPath($new);
+        rename($old_filenane, $new_filenane);
     }
 
     /**

@@ -13,7 +13,6 @@ use yii\base\InvalidParamException;
 use yii\base\Model;
 use yii\helpers\ArrayHelper;
 use yii\helpers\FileHelper;
-use yii\web\UploadedFile;
 
 
 /**
@@ -184,7 +183,7 @@ class GalleryImageBehavior extends GalleryBehavior
     {
         $this->_repository->setOwnerId($this->getOwnerId());
         $updateData = $this->_repository->updateData($imagesData);
-        $this->renameImages($imagesData, $updateData);
+        $this->renameImages($updateData);
         return $updateData;
     }
 
@@ -307,23 +306,34 @@ class GalleryImageBehavior extends GalleryBehavior
     }
 
     /**
-     * @inheritdoc
+     * @param $model
+     * @return string
      */
-    protected function renameImages($old, $new)
+    protected function getImagePathInfo($model)
     {
-        $model = $this->owner;
-        foreach ($new as $img) {
-            if (isset($old[$img->id])) {
+        return $this->_repository->getImagePathInfo($model);
+    }
 
-                $old_name = pathinfo($old[$img->id]['image'], PATHINFO_BASENAME);
-                $model->{$this->attribute} = $old_name;
+    /**
+     * @param ImageRepositoryInterface[] $data
+     */
+    protected function renameImages($data)
+    {
+        foreach ($data as $img) {
+            /** @var ActiveRecord $img */
+            $old = $img->getOldAttributes();
+            if ($old['name'] != $img->name) {
+                $old_filename = $old['image'];
 
-                //$file = UploadedFile::getInstance($model, $this->attribute);
-//print_r($file);
-                //$file = UploadedFile::getInstanceByName($img->image);
-                $new_name = $this->getFileName($img->image);
-                //$new_name = $img->image;
-                echo $new_name;
+                $fileinfo = $this->getImagePathInfo($img);
+                $new_filename = $this->getFileName($fileinfo);
+
+                $img->image = $new_filename;
+
+                if($img->save()){
+                    $this->deleteThumbs($old_filename);
+                    $this->renameFile($old_filename, $new_filename);
+                };
             }
         }
     }

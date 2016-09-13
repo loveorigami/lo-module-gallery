@@ -24,7 +24,7 @@ class GalleryItemMeta extends MetaFields
                     "title" => Yii::t('backend', 'Name'),
                     "showInGrid" => true,
                     "showInFilter" => true,
-                    "isRequired" => true,
+                    "isRequired" => false,
                     "editInGrid" => true,
                 ],
                 "params" => [$this->owner, "name"]
