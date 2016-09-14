@@ -1,9 +1,6 @@
 <?php
 
 namespace lo\modules\gallery\helpers;
-use lo\core\db\ActiveRecord;
-use lo\modules\gallery\behaviors\GalleryImageBehavior;
-use yii\web\UploadedFile;
 
 /**
  * Class FileHelper
@@ -53,27 +50,49 @@ class FileHelper
      */
     public static function ruTranslit($name)
     {
-        $tr = array(
+        $name = self::sanitize($name);
+
+        $tr = [
             "А" => "a", "Б" => "b", "В" => "v", "Г" => "g",
             "Д" => "d", "Е" => "e", "Ё" => "e", "Ж" => "zh", "З" => "z", "И" => "i",
             "Й" => "y", "К" => "k", "Л" => "l", "М" => "m", "Н" => "n",
             "О" => "o", "П" => "p", "Р" => "r", "С" => "s", "Т" => "t",
             "У" => "u", "Ф" => "f", "Х" => "h", "Ц" => "ts", "Ч" => "ch",
             "Ш" => "sh", "Щ" => "sch", "Ъ" => "", "Ы" => "yi", "Ь" => "",
-            "Э" => "e", "Ю" => "yu", "Я" => "ya", "а" => "a", "б" => "b",
-            "в" => "v", "г" => "g", "д" => "d", "ё" => "e", "е" => "e", "ж" => "zh",
-            "з" => "z", "и" => "i", "й" => "y", "к" => "k", "л" => "l",
-            "м" => "m", "н" => "n", "о" => "o", "п" => "p", "р" => "r",
-            "с" => "s", "т" => "t", "у" => "u", "ф" => "f", "х" => "h",
-            "ц" => "ts", "ч" => "ch", "ш" => "sh", "щ" => "sch", "ъ" => "y",
-            "ы" => "yi", "ь" => "", "э" => "e", "ю" => "yu", "я" => "ya",
-            " " => "_", "/" => "_", ")" => "", "(" => "",
-            "&" => "", "?" => "", "%" => "", "," => "", "$" => "", ";" => "",
+            "Э" => "e", "Ю" => "yu", "Я" => "ya",
+
+            "а" => "a", "б" => "b", "в" => "v", "г" => "g",
+            "д" => "d", "ё" => "e", "е" => "e", "ж" => "zh", "з" => "z", "и" => "i",
+            "й" => "y", "к" => "k", "л" => "l", "м" => "m", "н" => "n",
+            "о" => "o", "п" => "p", "р" => "r", "с" => "s", "т" => "t",
+            "у" => "u", "ф" => "f", "х" => "h", "ц" => "ts", "ч" => "ch",
+            "ш" => "sh", "щ" => "sch", "ъ" => "y", "ы" => "yi", "ь" => "",
+            "э" => "e", "ю" => "yu", "я" => "ya",
+
+            // see self::sanitize
+            " " => "", "\"" => "", "'" => "", "&" => "",
+            "/" => "", "\\" => "", "?" => "", "#" => "",
+
+            ")" => "", "(" => "", "%" => "", "," => "", "$" => "", ";" => "",
             ":" => "", "<" => "", ">" => "", "*" => "", "+" => "", "=" => "",
-            "@" => "", "#" => "", "№" => "", "!" => "", "^" => "", "'" => "", "\"" => ""
-        );
+            "@" => "",  "№" => "", "!" => "", "^" => "",
+        ];
 
         return strtr($name, $tr);
+    }
+
+    /**
+     * Replaces characters in strings that are illegal/unsafe for filename.
+     *
+     * #my*  unsaf<e>&file:name?".png
+     *
+     * @param string $filename the source filename to be "sanitized"
+     * @return boolean string the sanitized filename
+     */
+    public static function sanitize($filename)
+    {
+        $filename = trim($filename);
+        return str_replace([' ', '"', '\'', '&', '/', '\\', '?', '#'], '-', $filename);
     }
 
 }

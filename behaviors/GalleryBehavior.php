@@ -40,6 +40,9 @@ class GalleryBehavior extends Behavior
     /** @var string original name this file */
     public $originalFileName;
 
+    /** @var string разделитель имени для записи в бд */
+    public $originalNameDelimiter = '~';
+
     /** @var bool Getting file instance by name */
     public $instanceByName = true;
 
@@ -49,7 +52,6 @@ class GalleryBehavior extends Behavior
      * @see self::generateFileName()
      */
     public $generateNewName = true;
-    public $generateNextName = true;
 
     /** @var boolean If `true` current attribute file will be deleted */
     public $unlinkOnSave = true;
@@ -210,6 +212,9 @@ class GalleryBehavior extends Behavior
         } else {
             return $this->sanitize($file->name);
         }
+
+
+
     }
 
     /**
@@ -225,7 +230,8 @@ class GalleryBehavior extends Behavior
      */
     protected function getOriginalFileName()
     {
-        return $this->originalFileName;
+        $name = explode($this->originalNameDelimiter, $this->originalFileName);
+        return $name[0];
     }
 
     /**
