@@ -43,9 +43,6 @@ class GalleryBehavior extends Behavior
     /** @var string разделитель имени для записи в бд */
     public $originalNameDelimiter = '~';
 
-    /** @var bool Getting file instance by name */
-    public $instanceByName = true;
-
     /**
      * @var boolean|callable generate a new unique name for the file
      * set true or anonymous function takes the old filename and returns a new name.
@@ -53,17 +50,24 @@ class GalleryBehavior extends Behavior
      */
     public $generateNewName = true;
 
-    /** @var boolean If `true` current attribute file will be deleted */
-    public $unlinkOnSave = true;
-
-    /** @var boolean If `true` current attribute file will be deleted after model deletion. */
-    public $unlinkOnDelete = true;
+    /** @var boolean If `true` current directory will be deleted after model deletion. */
+    public $removeDirectoryOnDelete = false;
 
     /** @var boolean $deleteTempFile whether to delete the temporary file after saving. */
     public $deleteTempFile = true;
 
     /** @var UploadedFile the uploaded file instance. */
     private $_file;
+
+    /**
+     * @inheritdoc
+     */
+    public function events()
+    {
+        return [
+            BaseActiveRecord::EVENT_AFTER_DELETE => 'afterDelete',
+        ];
+    }
 
     /**
      * @inheritdoc
@@ -172,6 +176,26 @@ class GalleryBehavior extends Behavior
     protected function save($file, $path)
     {
         return $file->saveAs($path, $this->deleteTempFile);
+    }
+
+
+    /**
+     * event after delete
+     */
+    public function afterDelete()
+    {
+        $this->deleteAll();
+    }
+
+    /**
+     * Delete all files in directory
+     */
+    protected function deleteAll()
+    {
+        if ($this->removeDirectoryOnDelete) {
+            $path = $this->getPath();
+            FileHelper::removeDirectory($path);
+        }
     }
 
     /**

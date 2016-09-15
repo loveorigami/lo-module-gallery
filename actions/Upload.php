@@ -108,6 +108,7 @@ class Upload extends Base
      */
     private function ajaxUpload()
     {
+
         $this->behavior->uploadFile();
         /** @var GalleryItem $image */
         $image = $this->behavior->getModel();

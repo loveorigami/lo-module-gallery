@@ -102,16 +102,6 @@ class GalleryImageBehavior extends GalleryBehavior
     }
 
     /**
-     * @inheritdoc
-     */
-    public function events()
-    {
-        return [
-            BaseActiveRecord::EVENT_AFTER_DELETE => 'afterDelete',
-        ];
-    }
-
-    /**
      * @param array $ids
      * @return ActiveQuery relation
      */
@@ -225,6 +215,16 @@ class GalleryImageBehavior extends GalleryBehavior
     }
 
     /**
+     * Returns file path for the filename.
+     * @return string|null the file path.
+     */
+    public function getThumbPath()
+    {
+        $path = $this->resolvePath($this->thumbPath);
+        return $path ? Yii::getAlias($path) : null;
+    }
+
+    /**
      * @param string $filename
      * @param string $profile
      * @return string
@@ -284,26 +284,25 @@ class GalleryImageBehavior extends GalleryBehavior
     }
 
     /**
-     * event after delete
-     */
-    public function afterDelete()
-    {
-        $this->deleteAll();
-    }
-
-    /**
      * delete all images
      * @param array $ids
      */
     public function deleteAll($ids = [])
     {
-        /** @var ImageRepositoryInterface[] $images */
+        /** @var ActiveRecord $images */
         $images = $this->getImages($ids)->all();
 
         foreach ($images as $model) {
-            $this->delete($model->image);
             $model->delete();
+            $this->delete($model->image);
         }
+
+        if ($this->removeDirectoryOnDelete) {
+            $path = $this->getThumbPath();
+            FileHelper::removeDirectory($path);
+        }
+
+        parent::deleteAll();
     }
 
     /**
