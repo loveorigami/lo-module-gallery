@@ -84,19 +84,6 @@ class GalleryBehavior extends Behavior
     }
 
     /**
-     * @inheritdoc
-     */
-    public function events()
-    {
-        return [
-            //BaseActiveRecord::EVENT_BEFORE_VALIDATE => 'beforeValidate',
-            //BaseActiveRecord::EVENT_BEFORE_UPDATE => 'beforeSave',
-            //BaseActiveRecord::EVENT_AFTER_UPDATE => 'afterSave',
-            //BaseActiveRecord::EVENT_AFTER_DELETE => 'afterDelete',
-        ];
-    }
-
-    /**
      * This method is invoked before validation starts.
      */
     public function uploadFile()
@@ -212,9 +199,6 @@ class GalleryBehavior extends Behavior
         } else {
             return $this->sanitize($file->name);
         }
-
-
-
     }
 
     /**

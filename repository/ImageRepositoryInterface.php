@@ -42,9 +42,10 @@ interface ImageRepositoryInterface
 
     /**
      * query find()
+     * @param array $ids
      * @return \lo\core\db\ActiveQuery
      */
-    public function getImages();
+    public function getImages($ids = []);
 
     /**
      * @param ActiveRecord $model

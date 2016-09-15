@@ -95,7 +95,7 @@ class Upload extends Base
      */
     private function delete($ids)
     {
-        $this->behavior->deleteImages($ids);
+        $this->behavior->deleteAll($ids);
         Yii::$app->session->setFlash('success', 'Delete success');
         return 'OK';
     }

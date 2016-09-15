@@ -11,6 +11,7 @@ use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 use yii\base\Model;
+use yii\db\BaseActiveRecord;
 use yii\helpers\ArrayHelper;
 use yii\helpers\FileHelper;
 
@@ -101,12 +102,23 @@ class GalleryImageBehavior extends GalleryBehavior
     }
 
     /**
+     * @inheritdoc
+     */
+    public function events()
+    {
+        return [
+            BaseActiveRecord::EVENT_AFTER_DELETE => 'afterDelete',
+        ];
+    }
+
+    /**
+     * @param array $ids
      * @return ActiveQuery relation
      */
-    public function getImages()
+    public function getImages($ids = [])
     {
         $this->_repository->setOwnerId($this->getOwnerId());
-        return $this->_repository->getImages();
+        return $this->_repository->getImages($ids);
     }
 
     /**
@@ -135,17 +147,6 @@ class GalleryImageBehavior extends GalleryBehavior
         return $this->_repository->reOrder($order);
     }
 
-    /**
-     * @param $ids
-     */
-    public function deleteImages($ids)
-    {
-        foreach ($ids as $id) {
-            $model = $this->setModel($id);
-            $this->delete($model->image);
-            $this->_repository->delete();
-        }
-    }
 
     /**
      * @inheritdoc
@@ -283,7 +284,31 @@ class GalleryImageBehavior extends GalleryBehavior
     }
 
     /**
-     * @inheritdoc
+     * event after delete
+     */
+    public function afterDelete()
+    {
+        $this->deleteAll();
+    }
+
+    /**
+     * delete all images
+     * @param array $ids
+     */
+    public function deleteAll($ids = [])
+    {
+        /** @var ImageRepositoryInterface[] $images */
+        $images = $this->getImages($ids)->all();
+
+        foreach ($images as $model) {
+            $this->delete($model->image);
+            $model->delete();
+        }
+    }
+
+    /**
+     * delete file
+     * @param string $filename
      */
     protected function delete($filename)
     {
@@ -292,7 +317,8 @@ class GalleryImageBehavior extends GalleryBehavior
     }
 
     /**
-     * @inheritdoc
+     * delete thumbs
+     * @param $filename
      */
     protected function deleteThumbs($filename)
     {
@@ -330,7 +356,7 @@ class GalleryImageBehavior extends GalleryBehavior
 
                 $img->image = $new_filename;
 
-                if($img->save()){
+                if ($img->save()) {
                     $this->deleteThumbs($old_filename);
                     $this->renameFile($old_filename, $new_filename);
                 };

@@ -103,9 +103,10 @@ class ImageRepository extends Object implements ImageRepositoryInterface
     }
 
     /**
+     * @param array $ids
      * @return ActiveQuery relation
      */
-    public function getImages()
+    public function getImages($ids = [])
     {
         $model = $this->modelClass;
         /** @var GalleryItem $model */
@@ -118,6 +119,10 @@ class ImageRepository extends Object implements ImageRepositoryInterface
             ])
             ->orderBy(['pos' => SORT_ASC]);
 
+        if ($ids) {
+            $query->andWhere(['in', 'id', $ids]);
+        }
+
         return $query;
     }
 
@@ -127,12 +132,12 @@ class ImageRepository extends Object implements ImageRepositoryInterface
      */
     public function getImagePathInfo($model)
     {
-        if(!$model) return null;
+        if (!$model) return null;
 
         $file = pathinfo($model->image);
 
-        if ($model->name){
-            $file['filename'] = $model->name.'.'.$file['extension'];
+        if ($model->name) {
+            $file['filename'] = $model->name . '.' . $file['extension'];
         } else {
             $file['basename'] = null;
         }
@@ -167,22 +172,14 @@ class ImageRepository extends Object implements ImageRepositoryInterface
      */
     public function updateData($imagesData)
     {
+        /** @var GalleryItem $model */
+        $model = $this->modelClass;
+
         $imageIds = array_keys($imagesData);
 
-        $model = $this->modelClass;
-        /** @var GalleryItem $model */
-        $query = $model::find();
+        /** @var GalleryItem[] $imagesToUpdate */
+        $imagesToUpdate = $this->getImages($imageIds)->all();
 
-        $imagesToUpdate = $query->select(['id', 'name', 'image', 'description', 'pos'])
-            ->where([
-                'entity' => $this->entity,
-                'owner_id' => $this->ownerId
-            ])
-            ->andWhere(['in', 'id', $imageIds])
-            ->orderBy(['pos' => SORT_ASC])
-            ->all();
-
-        /** @var GalleryItem $image */
         foreach ($imagesToUpdate as $image) {
 
             if (isset($imagesData[$image->id]['name'])) {
