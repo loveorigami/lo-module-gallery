@@ -108,21 +108,25 @@ class Upload extends Base
      */
     private function ajaxUpload()
     {
-
         $this->behavior->uploadFile();
-        /** @var GalleryItem $image */
-        $image = $this->behavior->getModel();
 
-        // not "application/json", because  IE8 trying to save response as a file
-        Yii::$app->response->headers->set('Content-Type', 'text/html');
+        if ($this->owner->errors) {
+            return Json::encode($this->owner->errors);
+        } else {
+            /** @var GalleryItem $image */
+            $image = $this->behavior->getModel();
 
-        return Json::encode([
-            'id' => $image->id,
-            'pos' => $image->pos,
-            'name' => (string)$image->name,
-            'description' => (string)$image->description,
-            'preview' => $this->behavior->getThumbUploadUrl($image->image, $image::THUMB_BIG),
-        ]);
+            // not "application/json", because  IE8 trying to save response as a file
+            Yii::$app->response->headers->set('Content-Type', 'text/html');
+
+            return Json::encode([
+                'id' => $image->id,
+                'pos' => $image->pos,
+                'name' => (string)$image->name,
+                'description' => (string)$image->description,
+                'preview' => $this->behavior->getThumbUploadUrl($image->image, $image::THUMB_BIG),
+            ]);
+        }
     }
 
     /**

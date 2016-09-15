@@ -10,6 +10,7 @@ use yii\base\InvalidParamException;
 use yii\db\BaseActiveRecord;
 use yii\helpers\ArrayHelper;
 use yii\helpers\FileHelper;
+use yii\validators\Validator;
 use yii\web\UploadedFile;
 
 
@@ -56,6 +57,9 @@ class GalleryBehavior extends Behavior
     /** @var boolean $deleteTempFile whether to delete the temporary file after saving. */
     public $deleteTempFile = true;
 
+    public $maxFileSize = null;
+    public $extensions = 'png';
+
     /** @var UploadedFile the uploaded file instance. */
     private $_file;
 
@@ -89,6 +93,7 @@ class GalleryBehavior extends Behavior
 
     /**
      * This method is invoked before validation starts.
+     * @return bool
      */
     public function uploadFile()
     {
@@ -104,15 +109,28 @@ class GalleryBehavior extends Behavior
                 $this->_file->name = $this->getFileName($this->_file);
                 $this->fileName = $this->_file->name;
 
-                $path = $this->getUploadPath($this->fileName);
-                if (is_string($path) && FileHelper::createDirectory(dirname($path))) {
-                    $this->save($this->_file, $path);
-                    $this->afterUpload();
+                $model->{$this->attribute} = $this->_file;
+
+                $validator = Validator::createValidator('file', $model, $this->attribute, [
+                    'extensions' => $this->extensions,
+                ]);
+                $validator->validateAttribute($model, $this->attribute);
+
+                if (!$model->errors) {
+                    $path = $this->getUploadPath($this->fileName);
+                    if (is_string($path) && FileHelper::createDirectory(dirname($path))) {
+                        $this->save($this->_file, $path);
+                        $this->afterUpload();
+                        return true;
+                    } else {
+                        throw new InvalidParamException("Directory specified in 'path' attribute doesn't exist or cannot be created.");
+                    }
                 } else {
-                    throw new InvalidParamException("Directory specified in 'path' attribute doesn't exist or cannot be created.");
+                    return false;
                 }
             }
         }
+        return false;
     }
 
     /**
