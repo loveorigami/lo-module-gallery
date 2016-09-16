@@ -11,21 +11,15 @@ use lo\core\db\ActiveRecord;
 /**
  * Interface ImageRepositoryInterface
  * @package lo\modules\gallery\repository
-
  * @property string $modelClass
  * @property string $entity
  * @property string $ownerId
+ * @property string $image
  */
 interface ImageRepositoryInterface
 {
     /**
-     * @param $id
-     * @return \yii\base\Model
-     */
-    public function setModel($id = null);
-
-    /**
-     * @return \yii\base\Model
+     * @return \lo\core\db\ActiveRecord
      */
     public function getModel();
 
@@ -37,23 +31,35 @@ interface ImageRepositoryInterface
     public function getImages($ids = []);
 
     /**
+     * @param $imagesData
+     * @return array
+     */
+    public function updateImages($imagesData);
+
+    /**
+     * @param $data
      * @param ActiveRecord $model
+     * @return mixed
+     */
+    public function saveImage($data, $model = null);
+
+    /**
+     * @param \lo\core\db\ActiveRecord $model
      * @return array
      */
     public function getImagePathInfo($model);
 
     /**
      * Сортировка
-     * @param array $order
+     * @param array $ids
      * @return array
      */
-    public function reOrder($order);
+    public function reOrder($ids);
 
     /**
-     * @param $imagesData
-     * @return array
+     * @param \lo\core\db\ActiveRecord $model
+     * @return string
      */
-    public function updateImages($imagesData);
+    public function oldImage($model);
 
-    public function saveImage($data);
 }

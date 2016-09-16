@@ -197,7 +197,6 @@ class GalleryBehavior extends Behavior
         return $file->saveAs($path, $this->deleteTempFile);
     }
 
-
     /**
      * event after delete
      */

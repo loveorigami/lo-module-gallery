@@ -4,6 +4,7 @@ namespace lo\modules\gallery\repository;
 
 use lo\core\db\ActiveQuery;
 use lo\core\db\ActiveRecord;
+use lo\core\helpers\ArrayHelper;
 use lo\modules\gallery\models\GalleryItem;
 use Yii;
 use yii\base\Model;
@@ -109,15 +110,15 @@ class ImageRepository extends Object implements ImageRepositoryInterface
     }
 
     /**
-     * @param array $order
+     * @param array $ids
      * @return array
      */
-    public function reOrder($order)
+    public function reOrder($ids)
     {
         /** @var GalleryItem $model */
         $model = $this->modelClass;
 
-        foreach ($order as $pos => $id) {
+        foreach ($ids as $pos => $id) {
 
             Yii::$app->db->createCommand()
                 ->update(
@@ -127,26 +128,18 @@ class ImageRepository extends Object implements ImageRepositoryInterface
                 )->execute();
         }
 
-        return $order;
+        return $ids;
     }
 
     /**
-     * @param array $data
+     * @param $data
+     * @param null $model
+     * @return bool
      */
-    public function saveImage($data){
-        /**@var GalleryItem $model */
-        $model = $this->setModel();
-
-        $model->name = $data['name'];
-        $model->image = $data['image'];
-        $model->path = $data['path'];
-        $model->owner_id = $data['owner_id'];
-        $model->entity = $this->entity;
-        $model->status = $model::STATUS_PUBLISHED;
-        $model->save();
-
-        $model->pos = $model->id;
-        $model->save();
+    public function saveImage($data, $model = null)
+    {
+        $image = $this->loadModel($data, $model);
+        return $image->save();
     }
 
     /**
@@ -181,5 +174,52 @@ class ImageRepository extends Object implements ImageRepositoryInterface
         }
 
         return $imagesToUpdate;
+    }
+
+    /**
+     * @param $data
+     * @param null $model
+     * @return ActiveRecord
+     */
+    protected function loadModel($data, $model = null)
+    {
+        if (!$model or !($model instanceof GalleryItem)) {
+            $id = ArrayHelper::getValue($data, 'id');
+            $model = $this->setModel($id);
+        }
+
+        $scenario = $name = ArrayHelper::getValue($data, 'scenario', $model::SCENARIO_UPDATE);
+        $model->scenario = $scenario;
+
+        if ($scenario == $model::SCENARIO_INSERT) {
+            $model->entity = $this->entity;
+            $model->status = $model::STATUS_PUBLISHED;
+            $model->pos = $this->getImages()->count() + 1;
+        }
+
+        $name = ArrayHelper::getValue($data, 'name');
+        if ($name) $model->name = $name;
+
+        $image = ArrayHelper::getValue($data, 'image');
+        if ($image) $model->image = $image;
+
+        $path = ArrayHelper::getValue($data, 'path');
+        if ($path) $model->path = $path;
+
+        $owner_id = ArrayHelper::getValue($data, 'owner_id');
+        if ($owner_id) $model->owner_id = $owner_id;
+
+        return $model;
+    }
+
+    /**
+     * @param ActiveRecord $model
+     * @return string
+     */
+    public
+    function oldImage($model)
+    {
+        $old = $model->getOldAttributes();
+        return ($old['name'] != $model->name) ? $old['image'] : false;
     }
 }

@@ -127,6 +127,16 @@ class GalleryImageBehavior extends GalleryBehavior
         return $this->_repository->reOrder($order);
     }
 
+    /**
+     * @param array $imagesData
+     * @return array
+     */
+    public function updateImages($imagesData)
+    {
+        $updateData = $this->_repository->updateImages($imagesData);
+        $this->renameImages($updateData);
+        return $updateData;
+    }
 
     /**
      * @inheritdoc
@@ -140,6 +150,7 @@ class GalleryImageBehavior extends GalleryBehavior
         }
 
         $data = [
+            'scenario' => ActiveRecord::SCENARIO_INSERT,
             'name' => $this->getOriginalFileName(),
             'image' => $this->fileName,
             'path' => $this->resolvePath($this->path),
@@ -147,18 +158,38 @@ class GalleryImageBehavior extends GalleryBehavior
         ];
 
         $this->_repository->saveImage($data);
-
     }
 
     /**
-     * @param array $imagesData
-     * @return array
+     * @param ImageRepositoryInterface[] $images
      */
-    public function updateImages($imagesData)
+    protected function renameImages($images)
     {
-        $updateData = $this->_repository->updateImages($imagesData);
-        $this->renameImages($updateData);
-        return $updateData;
+        /** @var ActiveRecord $model */
+        foreach ($images as $model) {
+            $old_filename = $this->_repository->oldImage($model);
+
+            if ($old_filename) {
+                $fileinfo = $this->getImagePathInfo($model);
+                $new_filename = $this->getFileName($fileinfo);
+
+                $data['image'] = $new_filename;
+
+                if ($this->_repository->saveImage($data, $model)) {
+                    $this->deleteThumbs($old_filename);
+                    $this->renameFile($old_filename, $new_filename);
+                };
+            }
+        }
+    }
+
+    /**
+     * @param ActiveRecord $model
+     * @return string
+     */
+    protected function getImagePathInfo($model)
+    {
+        return $this->_repository->getImagePathInfo($model);
     }
 
     /**
@@ -268,8 +299,23 @@ class GalleryImageBehavior extends GalleryBehavior
 
     /**
      * delete all images
+     * @param array $ids
      */
-    public function deleteAll()
+    public function deleteImages($ids = [])
+    {
+        /** @var ActiveRecord $images */
+        $images = $this->getImages($ids)->all();
+
+        foreach ($images as $model) {
+            $model->delete();
+            $this->delete($model->image);
+        }
+    }
+
+    /**
+     * delete all images
+     */
+    protected function deleteAll()
     {
         /** @var ActiveRecord $images */
         $images = $this->getImages()->all();
@@ -285,22 +331,6 @@ class GalleryImageBehavior extends GalleryBehavior
         }
 
         parent::deleteAll();
-    }
-
-    /**
-     * delete all images
-     * @param array $ids
-     */
-    public function deleteImages($ids = [])
-    {
-        /** @var ActiveRecord $images */
-        $images = $this->getImages($ids)->all();
-
-        foreach ($images as $model) {
-            $model->delete();
-            $this->delete($model->image);
-        }
-
     }
 
     /**
@@ -324,39 +354,6 @@ class GalleryImageBehavior extends GalleryBehavior
             $path = $this->getThumbUploadPath($filename, $profile);
             if (is_file($path)) {
                 unlink($path);
-            }
-        }
-    }
-
-    /**
-     * @param $model
-     * @return string
-     */
-    protected function getImagePathInfo($model)
-    {
-        return $this->_repository->getImagePathInfo($model);
-    }
-
-    /**
-     * @param ImageRepositoryInterface[] $data
-     */
-    protected function renameImages($data)
-    {
-        foreach ($data as $img) {
-            /** @var ActiveRecord $img */
-            $old = $img->getOldAttributes();
-            if ($old['name'] != $img->name) {
-                $old_filename = $old['image'];
-
-                $fileinfo = $this->getImagePathInfo($img);
-                $new_filename = $this->getFileName($fileinfo);
-
-                $img->image = $new_filename;
-
-                if ($img->save()) {
-                    $this->deleteThumbs($old_filename);
-                    $this->renameFile($old_filename, $new_filename);
-                };
             }
         }
     }
