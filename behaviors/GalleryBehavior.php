@@ -57,8 +57,9 @@ class GalleryBehavior extends Behavior
     /** @var boolean $deleteTempFile whether to delete the temporary file after saving. */
     public $deleteTempFile = true;
 
-    public $maxFileSize = null;
-    public $extensions = 'png';
+
+    public $maxSize = null;
+    public $extensions = null;
 
     /** @var UploadedFile the uploaded file instance. */
     private $_file;
@@ -99,6 +100,7 @@ class GalleryBehavior extends Behavior
     {
         /** @var BaseActiveRecord $model */
         $model = $this->owner;
+        $result = false;
 
         if (in_array($model->scenario, $this->scenarios)) {
 
@@ -113,6 +115,7 @@ class GalleryBehavior extends Behavior
 
                 $validator = Validator::createValidator('file', $model, $this->attribute, [
                     'extensions' => $this->extensions,
+                    'maxSize' => $this->maxSize,
                 ]);
                 $validator->validateAttribute($model, $this->attribute);
 
@@ -121,16 +124,14 @@ class GalleryBehavior extends Behavior
                     if (is_string($path) && FileHelper::createDirectory(dirname($path))) {
                         $this->save($this->_file, $path);
                         $this->afterUpload();
-                        return true;
+                        $result = true;
                     } else {
                         throw new InvalidParamException("Directory specified in 'path' attribute doesn't exist or cannot be created.");
                     }
-                } else {
-                    return false;
                 }
             }
         }
-        return false;
+        return $result;
     }
 
     /**
@@ -313,6 +314,4 @@ class GalleryBehavior extends Behavior
     {
         return true;
     }
-
-
 }

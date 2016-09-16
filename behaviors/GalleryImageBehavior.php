@@ -11,7 +11,6 @@ use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 use yii\base\Model;
-use yii\db\BaseActiveRecord;
 use yii\helpers\ArrayHelper;
 use yii\helpers\FileHelper;
 
@@ -69,7 +68,8 @@ class GalleryImageBehavior extends GalleryBehavior
 
         $this->_repository = new $repository([
             'modelClass' => $this->modelClass,
-            'entity' => $this->entity
+            'entity' => $this->entity,
+            'ownerId' => $this->getOwnerId()
         ]);
     }
 
@@ -107,17 +107,7 @@ class GalleryImageBehavior extends GalleryBehavior
      */
     public function getImages($ids = [])
     {
-        $this->_repository->setOwnerId($this->getOwnerId());
         return $this->_repository->getImages($ids);
-    }
-
-    /**
-     * @param null $id
-     * @return Model
-     */
-    public function setModel($id = null)
-    {
-        return $this->_repository->setModel($id);
     }
 
     /**
@@ -149,20 +139,14 @@ class GalleryImageBehavior extends GalleryBehavior
             $this->createThumbs();
         }
 
-        /**
-         * @var ImageRepositoryInterface $model
-         */
-        $model = $this->_repository->setModel();
-        $model->name = $this->getOriginalFileName();
+        $data = [
+            'name' => $this->getOriginalFileName(),
+            'image' => $this->fileName,
+            'path' => $this->resolvePath($this->path),
+            'owner_id' => $this->getOwnerId(),
+        ];
 
-        $model->image = $this->fileName;
-        $model->entity = $this->entity;
-        $model->owner_id = $this->getOwnerId();
-        $model->status = $this->_repository->getDefaultStatus();
-        $model->path = $this->resolvePath($this->path);
-        $this->_repository->save();
-        $model->pos = $model->id;
-        $this->_repository->save();
+        $this->_repository->saveImage($data);
 
     }
 
@@ -170,10 +154,9 @@ class GalleryImageBehavior extends GalleryBehavior
      * @param array $imagesData
      * @return array
      */
-    public function updateImagesData($imagesData)
+    public function updateImages($imagesData)
     {
-        $this->_repository->setOwnerId($this->getOwnerId());
-        $updateData = $this->_repository->updateData($imagesData);
+        $updateData = $this->_repository->updateImages($imagesData);
         $this->renameImages($updateData);
         return $updateData;
     }
@@ -285,12 +268,11 @@ class GalleryImageBehavior extends GalleryBehavior
 
     /**
      * delete all images
-     * @param array $ids
      */
-    public function deleteAll($ids = [])
+    public function deleteAll()
     {
         /** @var ActiveRecord $images */
-        $images = $this->getImages($ids)->all();
+        $images = $this->getImages()->all();
 
         foreach ($images as $model) {
             $model->delete();
@@ -303,6 +285,22 @@ class GalleryImageBehavior extends GalleryBehavior
         }
 
         parent::deleteAll();
+    }
+
+    /**
+     * delete all images
+     * @param array $ids
+     */
+    public function deleteImages($ids = [])
+    {
+        /** @var ActiveRecord $images */
+        $images = $this->getImages($ids)->all();
+
+        foreach ($images as $model) {
+            $model->delete();
+            $this->delete($model->image);
+        }
+
     }
 
     /**

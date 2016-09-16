@@ -33,6 +33,7 @@
         } else if (!opts.hasDesc)
             $gallery.addClass('no-desc');
 
+        var $log = $('.log', $gallery);
         var $sorter = $('.sorter', $gallery);
         var $images = $('.images', $sorter);
         var $editorModal = $('.editor-modal', $gallery);
@@ -218,8 +219,11 @@
             var multiUpload = function (files) {
                 if (files.length == 0)
                     return;
+
+                $log.text('');
                 $progressOverlay.show();
                 $uploadProgress.css('width', '5%');
+
                 var filesCount = files.length;
                 var uploadedCount = 0;
                 var ids = [];
@@ -236,8 +240,20 @@
                         uploadedCount++;
                         if (this.status == 200) {
                             var resp = JSON.parse(this.response);
-                            addPhoto(resp['id'], resp['preview'], resp['name'], resp['description'], resp['pos']);
-                            ids.push(resp['id']);
+                            if (resp['result']) {
+                                var img = resp['image'];
+                                addPhoto(
+                                    img['id'],
+                                    img['preview'],
+                                    img['name'],
+                                    img['description'],
+                                    img['pos']
+                                );
+                                ids.push(img['id']);
+                            }
+                            else {
+                                $log.append(resp['errors']);
+                            }
                         } else {
                             // exception !!!
                         }
@@ -330,12 +346,24 @@
                     processData: false,
                     dataType: "json"
                 }).done(function (resp) {
-                    addPhoto(resp['id'], resp['preview'], resp['name'], resp['description'], resp['pos']);
-                    ids.push(resp['id']);
-                    $uploadProgress.css('width', '100%');
-                    $progressOverlay.hide();
-                    if (opts.hasName || opts.hasDesc) {
-                        editPhotos(ids);
+                    if (resp['result']) {
+                        var img = resp['image'];
+                        addPhoto(
+                            img['id'],
+                            img['preview'],
+                            img['name'],
+                            img['description'],
+                            img['pos']
+                        );
+                        ids.push(img['id']);
+                        $uploadProgress.css('width', '100%');
+                        $progressOverlay.hide();
+                        if (opts.hasName || opts.hasDesc) {
+                            editPhotos(ids);
+                        }
+                    }
+                    else {
+                        $log.append(resp['errors']);
                     }
                 });
             });

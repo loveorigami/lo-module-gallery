@@ -24,29 +24,10 @@ class ImageRepository extends Object implements ImageRepositoryInterface
     public $entity;
 
     /** @var string */
-    protected $ownerId;
+    public $ownerId;
 
     /** @var GalleryItem $model */
     protected $model;
-
-    /**
-     * save item
-     */
-    public function save()
-    {
-        if (!$this->model->save()) {
-            print_r($this->model->errors);
-        }
-        return true;
-    }
-
-    /**
-     * delete item
-     */
-    public function delete()
-    {
-        $this->model->delete();
-    }
 
     /**
      * @return ActiveRecord
@@ -83,23 +64,6 @@ class ImageRepository extends Object implements ImageRepositoryInterface
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
-    }
-
-    /**
-     * @param $ownerId
-     */
-    public function setOwnerId($ownerId)
-    {
-        $this->ownerId = $ownerId;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function getDefaultStatus()
-    {
-        $model = $this->model;
-        return $model::STATUS_PUBLISHED;
     }
 
     /**
@@ -167,10 +131,29 @@ class ImageRepository extends Object implements ImageRepositoryInterface
     }
 
     /**
+     * @param array $data
+     */
+    public function saveImage($data){
+        /**@var GalleryItem $model */
+        $model = $this->setModel();
+
+        $model->name = $data['name'];
+        $model->image = $data['image'];
+        $model->path = $data['path'];
+        $model->owner_id = $data['owner_id'];
+        $model->entity = $this->entity;
+        $model->status = $model::STATUS_PUBLISHED;
+        $model->save();
+
+        $model->pos = $model->id;
+        $model->save();
+    }
+
+    /**
      * @param $imagesData
      * @return array
      */
-    public function updateData($imagesData)
+    public function updateImages($imagesData)
     {
         /** @var GalleryItem $model */
         $model = $this->modelClass;

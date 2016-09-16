@@ -11,24 +11,13 @@ use lo\core\db\ActiveRecord;
 /**
  * Interface ImageRepositoryInterface
  * @package lo\modules\gallery\repository
- * @const STATUS_PUBLISHED
- * @property integer $id
- * @property string $name
+
+ * @property string $modelClass
  * @property string $entity
- * @property string $image
- * @property string $owner_id
- * @property string $description
- * @property string $path
- * @property integer $status
- * @property integer $pos
- * @property integer $created_at
- * @property integer $updated_at
+ * @property string $ownerId
  */
 interface ImageRepositoryInterface
 {
-    /** @param $ownerId */
-    public function setOwnerId($ownerId);
-
     /**
      * @param $id
      * @return \yii\base\Model
@@ -54,11 +43,6 @@ interface ImageRepositoryInterface
     public function getImagePathInfo($model);
 
     /**
-     * @return boolean
-     */
-    public function getDefaultStatus();
-
-    /**
      * Сортировка
      * @param array $order
      * @return array
@@ -66,18 +50,10 @@ interface ImageRepositoryInterface
     public function reOrder($order);
 
     /**
-     * удаление
-     */
-    public function delete();
-
-    /**
-     * сохранение
-     */
-    public function save();
-
-    /**
      * @param $imagesData
      * @return array
      */
-    public function updateData($imagesData);
+    public function updateImages($imagesData);
+
+    public function saveImage($data);
 }

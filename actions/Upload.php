@@ -7,6 +7,7 @@ use lo\core\db\ActiveRecord;
 use lo\modules\gallery\behaviors\GalleryImageBehavior;
 use lo\modules\gallery\models\GalleryItem;
 use Yii;
+use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\web\BadRequestHttpException;
 use yii\web\HttpException;
@@ -95,7 +96,7 @@ class Upload extends Base
      */
     private function delete($ids)
     {
-        $this->behavior->deleteAll($ids);
+        $this->behavior->deleteImages($ids);
         Yii::$app->session->setFlash('success', 'Delete success');
         return 'OK';
     }
@@ -108,10 +109,12 @@ class Upload extends Base
      */
     private function ajaxUpload()
     {
-        $this->behavior->uploadFile();
+        $result = $this->behavior->uploadFile();
 
-        if ($this->owner->errors) {
-            return Json::encode($this->owner->errors);
+        $data['result'] = $result;
+
+        if (!$result) {
+            $data['errors'] = Html::errorSummary($this->owner, ['header'=>false]);
         } else {
             /** @var GalleryItem $image */
             $image = $this->behavior->getModel();
@@ -119,14 +122,16 @@ class Upload extends Base
             // not "application/json", because  IE8 trying to save response as a file
             Yii::$app->response->headers->set('Content-Type', 'text/html');
 
-            return Json::encode([
+            $data['image'] = [
                 'id' => $image->id,
                 'pos' => $image->pos,
                 'name' => (string)$image->name,
                 'description' => (string)$image->description,
                 'preview' => $this->behavior->getThumbUploadUrl($image->image, $image::THUMB_BIG),
-            ]);
+            ];
         }
+
+        return Json::encode($data);
     }
 
     /**
@@ -144,7 +149,7 @@ class Upload extends Base
             throw new BadRequestHttpException('Nothing to save');
         }
 
-        $images = $this->behavior->updateImagesData($imagesData);
+        $images = $this->behavior->updateImages($imagesData);
 
         $resp = [];
 
