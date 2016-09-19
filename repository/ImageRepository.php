@@ -7,6 +7,7 @@ use lo\core\db\ActiveRecord;
 use lo\core\helpers\ArrayHelper;
 use lo\modules\gallery\models\GalleryItem;
 use Yii;
+use yii\base\InvalidParamException;
 use yii\base\Model;
 use yii\base\Object;
 use yii\web\NotFoundHttpException;
@@ -31,24 +32,33 @@ class ImageRepository extends Object implements ImageRepositoryInterface
     protected $model;
 
     /**
+     * @param $id
      * @return ActiveRecord
      */
-    public function getModel()
+    public function getModel($id = 0)
     {
+        if (!$this->model) {
+            if (!$id) {
+                $this->model = new $this->modelClass;
+                $this->model->entity = $this->entity;
+                $this->model->owner_id = $this->ownerId;
+            } else {
+                $this->model = $this->findModel($id);
+            }
+        }
+
         return $this->model;
     }
 
     /**
-     * @param null $id
-     * @return ActiveRecord|Model
+     * @param GalleryItem $model
      */
-    public function setModel($id = null)
+    public function setModel($model)
     {
-        if (!$id) {
-            return $this->model = new $this->modelClass;
-        } else {
-            return $this->model = $this->findModel($id);
-        }
+/*        if(!($model instanceof $this->modelClass)) {
+            throw new InvalidParamException('Model must be instanceof '. $this->modelClass);
+        }*/
+        $this->model = $model;
     }
 
     /**
@@ -68,10 +78,94 @@ class ImageRepository extends Object implements ImageRepositoryInterface
     }
 
     /**
+     * @param $data
+     * @return bool
+     */
+    public function saveImage($data)
+    {
+        $image = $this->loadModel($data);
+        return $image->save();
+    }
+
+    /**
+     * @return bool
+     */
+    public function deleteImage()
+    {
+        return $this->model->delete();
+    }
+
+    /**
+     * @param $data
+     * @return ActiveRecord
+     */
+    protected function loadModel($data)
+    {
+        $id = ArrayHelper::getValue($data, 'id');
+
+        $model = $this->getModel($id);
+
+        $scenario = $name = ArrayHelper::getValue($data, 'scenario', $model::SCENARIO_UPDATE);
+        $model->scenario = $scenario;
+
+        if ($scenario == $model::SCENARIO_INSERT) {
+            $model->entity = $this->entity;
+            $model->status = $model::STATUS_PUBLISHED;
+            $model->pos = $this->findImages()->count() + 1;
+        }
+
+        $name = ArrayHelper::getValue($data, 'name');
+        if ($name) $model->name = $name;
+
+        $image = ArrayHelper::getValue($data, 'image');
+        if ($image) $model->image = $image;
+
+        $path = ArrayHelper::getValue($data, 'path');
+        if ($path) $model->path = $path;
+
+        return $model;
+    }
+
+    /**
+     * @return array
+     */
+    public function getImagePathInfo()
+    {
+        if (!$this->model) return null;
+
+        $file = pathinfo($this->model->image);
+
+        if ($this->model->name) {
+            $file['filename'] = $this->model->name . '.' . $file['extension'];
+        } else {
+            $file['basename'] = null;
+        }
+        return $file;
+    }
+
+    /**
+     * @return string
+     */
+    public function getImageFile()
+    {
+        return $this->model->image;
+    }
+
+    /**
+     * @return string
+     */
+    public function oldImage()
+    {
+        $old = $this->model->getOldAttributes();
+        return ($old['name'] != $this->model->name) ? $old['image'] : false;
+    }
+
+
+    /**
      * @param array $ids
      * @return ActiveQuery relation
      */
-    public function getImages($ids = [])
+    public function findImages($ids = [])
     {
         $model = $this->modelClass;
         /** @var GalleryItem $model */
@@ -92,21 +186,37 @@ class ImageRepository extends Object implements ImageRepositoryInterface
     }
 
     /**
-     * @param GalleryItem $model
+     * @param $data
      * @return array
      */
-    public function getImagePathInfo($model)
+    public function updateImages($data)
     {
-        if (!$model) return null;
+        /** @var GalleryItem $model */
+        $model = $this->modelClass;
 
-        $file = pathinfo($model->image);
+        $imageIds = array_keys($data);
 
-        if ($model->name) {
-            $file['filename'] = $model->name . '.' . $file['extension'];
-        } else {
-            $file['basename'] = null;
+        /** @var GalleryItem[] $imagesToUpdate */
+        $imagesToUpdate = $this->findImages($imageIds)->all();
+
+        foreach ($imagesToUpdate as $image) {
+
+            if (isset($data[$image->id]['name'])) {
+                $image->name = $data[$image->id]['name'];
+            }
+            if (isset($data[$image->id]['description'])) {
+                $image->description = $data[$image->id]['description'];
+            }
+
+            Yii::$app->db->createCommand()
+                ->update(
+                    $model::tableName(),
+                    ['name' => $image->name, 'description' => $image->description],
+                    ['id' => $image->id]
+                )->execute();
         }
-        return $file;
+
+        return $imagesToUpdate;
     }
 
     /**
@@ -129,97 +239,5 @@ class ImageRepository extends Object implements ImageRepositoryInterface
         }
 
         return $ids;
-    }
-
-    /**
-     * @param $data
-     * @param null $model
-     * @return bool
-     */
-    public function saveImage($data, $model = null)
-    {
-        $image = $this->loadModel($data, $model);
-        return $image->save();
-    }
-
-    /**
-     * @param $imagesData
-     * @return array
-     */
-    public function updateImages($imagesData)
-    {
-        /** @var GalleryItem $model */
-        $model = $this->modelClass;
-
-        $imageIds = array_keys($imagesData);
-
-        /** @var GalleryItem[] $imagesToUpdate */
-        $imagesToUpdate = $this->getImages($imageIds)->all();
-
-        foreach ($imagesToUpdate as $image) {
-
-            if (isset($imagesData[$image->id]['name'])) {
-                $image->name = $imagesData[$image->id]['name'];
-            }
-            if (isset($imagesData[$image->id]['description'])) {
-                $image->description = $imagesData[$image->id]['description'];
-            }
-
-            Yii::$app->db->createCommand()
-                ->update(
-                    $model::tableName(),
-                    ['name' => $image->name, 'description' => $image->description],
-                    ['id' => $image->id]
-                )->execute();
-        }
-
-        return $imagesToUpdate;
-    }
-
-    /**
-     * @param $data
-     * @param null $model
-     * @return ActiveRecord
-     */
-    protected function loadModel($data, $model = null)
-    {
-        if (!$model or !($model instanceof GalleryItem)) {
-            $id = ArrayHelper::getValue($data, 'id');
-            $model = $this->setModel($id);
-        }
-
-        $scenario = $name = ArrayHelper::getValue($data, 'scenario', $model::SCENARIO_UPDATE);
-        $model->scenario = $scenario;
-
-        if ($scenario == $model::SCENARIO_INSERT) {
-            $model->entity = $this->entity;
-            $model->status = $model::STATUS_PUBLISHED;
-            $model->pos = $this->getImages()->count() + 1;
-        }
-
-        $name = ArrayHelper::getValue($data, 'name');
-        if ($name) $model->name = $name;
-
-        $image = ArrayHelper::getValue($data, 'image');
-        if ($image) $model->image = $image;
-
-        $path = ArrayHelper::getValue($data, 'path');
-        if ($path) $model->path = $path;
-
-        $owner_id = ArrayHelper::getValue($data, 'owner_id');
-        if ($owner_id) $model->owner_id = $owner_id;
-
-        return $model;
-    }
-
-    /**
-     * @param ActiveRecord $model
-     * @return string
-     */
-    public
-    function oldImage($model)
-    {
-        $old = $model->getOldAttributes();
-        return ($old['name'] != $model->name) ? $old['image'] : false;
     }
 }

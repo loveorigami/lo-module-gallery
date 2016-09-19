@@ -113,7 +113,7 @@ class GalleryBehavior extends Behavior
 
                 $model->{$this->attribute} = $this->_file;
 
-                $validator = Validator::createValidator('file', $model, $this->attribute, [
+                $validator = Validator::createValidator('image', $model, $this->attribute, [
                     'extensions' => $this->extensions,
                     'maxSize' => $this->maxSize,
                 ]);
@@ -131,6 +131,7 @@ class GalleryBehavior extends Behavior
                 }
             }
         }
+
         return $result;
     }
 
@@ -229,7 +230,7 @@ class GalleryBehavior extends Behavior
     }
 
     /**
-     * @param UploadedFile $file
+     * @param UploadedFile|array $file
      * @return string
      */
     protected function getFileName($file)

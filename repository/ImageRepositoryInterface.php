@@ -6,7 +6,6 @@
  * Time: 10:40
  */
 namespace lo\modules\gallery\repository;
-use lo\core\db\ActiveRecord;
 
 /**
  * Interface ImageRepositoryInterface
@@ -24,30 +23,43 @@ interface ImageRepositoryInterface
     public function getModel();
 
     /**
+     * @param \lo\core\db\ActiveRecord $model
+     */
+    public function setModel($model);
+
+    /**
      * query find()
      * @param array $ids
      * @return \lo\core\db\ActiveQuery
      */
-    public function getImages($ids = []);
+    public function findImages($ids = []);
 
     /**
-     * @param $imagesData
+     * @param array $data
      * @return array
      */
-    public function updateImages($imagesData);
+    public function updateImages($data);
 
     /**
      * @param $data
-     * @param ActiveRecord $model
      * @return mixed
      */
-    public function saveImage($data, $model = null);
+    public function saveImage($data);
 
     /**
-     * @param \lo\core\db\ActiveRecord $model
+     * @return bool
+     */
+    public function deleteImage();
+
+    /**
      * @return array
      */
-    public function getImagePathInfo($model);
+    public function getImagePathInfo();
+
+    /**
+     * @return string
+     */
+    public function getImageFile();
 
     /**
      * Сортировка
@@ -57,9 +69,8 @@ interface ImageRepositoryInterface
     public function reOrder($ids);
 
     /**
-     * @param \lo\core\db\ActiveRecord $model
      * @return string
      */
-    public function oldImage($model);
+    public function oldImage();
 
 }

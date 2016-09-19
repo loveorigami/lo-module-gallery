@@ -105,9 +105,9 @@ class GalleryImageBehavior extends GalleryBehavior
      * @param array $ids
      * @return ActiveQuery relation
      */
-    public function getImages($ids = [])
+    public function findImages($ids = [])
     {
-        return $this->_repository->getImages($ids);
+        return $this->_repository->findImages($ids);
     }
 
     /**
@@ -128,12 +128,12 @@ class GalleryImageBehavior extends GalleryBehavior
     }
 
     /**
-     * @param array $imagesData
+     * @param array $data
      * @return array
      */
-    public function updateImages($imagesData)
+    public function updateImages($data)
     {
-        $updateData = $this->_repository->updateImages($imagesData);
+        $updateData = $this->_repository->updateImages($data);
         $this->renameImages($updateData);
         return $updateData;
     }
@@ -154,7 +154,6 @@ class GalleryImageBehavior extends GalleryBehavior
             'name' => $this->getOriginalFileName(),
             'image' => $this->fileName,
             'path' => $this->resolvePath($this->path),
-            'owner_id' => $this->getOwnerId(),
         ];
 
         $this->_repository->saveImage($data);
@@ -167,29 +166,22 @@ class GalleryImageBehavior extends GalleryBehavior
     {
         /** @var ActiveRecord $model */
         foreach ($images as $model) {
-            $old_filename = $this->_repository->oldImage($model);
+
+            $this->_repository->setModel($model);
+            $old_filename = $this->_repository->oldImage();
 
             if ($old_filename) {
-                $fileinfo = $this->getImagePathInfo($model);
+                $fileinfo = $this->_repository->getImagePathInfo();
                 $new_filename = $this->getFileName($fileinfo);
 
                 $data['image'] = $new_filename;
 
-                if ($this->_repository->saveImage($data, $model)) {
+                if ($this->_repository->saveImage($data)) {
                     $this->deleteThumbs($old_filename);
                     $this->renameFile($old_filename, $new_filename);
                 };
             }
         }
-    }
-
-    /**
-     * @param ActiveRecord $model
-     * @return string
-     */
-    protected function getImagePathInfo($model)
-    {
-        return $this->_repository->getImagePathInfo($model);
     }
 
     /**
@@ -304,11 +296,14 @@ class GalleryImageBehavior extends GalleryBehavior
     public function deleteImages($ids = [])
     {
         /** @var ActiveRecord $images */
-        $images = $this->getImages($ids)->all();
+        $images = $this->findImages($ids)->all();
 
         foreach ($images as $model) {
-            $model->delete();
-            $this->delete($model->image);
+            $this->_repository->setModel($model);
+            $imageName = $this->_repository->getImageFile();
+            if ($this->_repository->deleteImage()) {
+                $this->delete($imageName);
+            }
         }
     }
 
@@ -318,11 +313,15 @@ class GalleryImageBehavior extends GalleryBehavior
     protected function deleteAll()
     {
         /** @var ActiveRecord $images */
-        $images = $this->getImages()->all();
+        $images = $this->findImages()->all();
 
         foreach ($images as $model) {
-            $model->delete();
-            $this->delete($model->image);
+            $this->_repository->setModel($model);
+            $imageName = $this->_repository->getImageFile();
+
+            if ($this->_repository->deleteImage()) {
+                $this->delete($imageName);
+            }
         }
 
         if ($this->removeDirectoryOnDelete) {

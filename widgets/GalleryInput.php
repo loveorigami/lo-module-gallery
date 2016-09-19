@@ -65,7 +65,7 @@ class GalleryInput extends InputWidget
         }
 
         $images = [];
-        foreach ($this->behavior->getImages()->all() as $image) {
+        foreach ($this->behavior->findImages()->all() as $image) {
             /** @var GalleryItem $image */
             $images[] = [
                 'id' => $image->id,
