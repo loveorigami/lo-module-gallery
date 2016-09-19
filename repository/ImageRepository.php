@@ -55,9 +55,9 @@ class ImageRepository extends Object implements ImageRepositoryInterface
      */
     public function setModel($model)
     {
-/*        if(!($model instanceof $this->modelClass)) {
+        if(!($model instanceof $this->modelClass)) {
             throw new InvalidParamException('Model must be instanceof '. $this->modelClass);
-        }*/
+        }
         $this->model = $model;
     }
 
