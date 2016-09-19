@@ -185,6 +185,39 @@ class GalleryImageBehavior extends GalleryBehavior
     }
 
     /**
+     * delete images
+     * @param array $ids
+     */
+    public function deleteImages($ids = [])
+    {
+        /** @var ActiveRecord $images */
+        $images = $this->findImages($ids)->all();
+
+        foreach ($images as $model) {
+            $this->_repository->setModel($model);
+            $imageName = $this->_repository->getImageFile();
+            if ($this->_repository->deleteImage()) {
+                $this->delete($imageName);
+            }
+        }
+    }
+
+    /**
+     * delete all images
+     */
+    protected function deleteAll()
+    {
+        $this->deleteImages();
+
+        if ($this->removeDirectoryOnDelete) {
+            $path = $this->getThumbPath();
+            FileHelper::removeDirectory($path);
+        }
+
+        parent::deleteAll();
+    }
+
+    /**
      * Get Gallery Id
      * @return mixed as string or integer
      * @throws Exception
@@ -287,49 +320,6 @@ class GalleryImageBehavior extends GalleryBehavior
         }
 
         return $thumbUrl;
-    }
-
-    /**
-     * delete all images
-     * @param array $ids
-     */
-    public function deleteImages($ids = [])
-    {
-        /** @var ActiveRecord $images */
-        $images = $this->findImages($ids)->all();
-
-        foreach ($images as $model) {
-            $this->_repository->setModel($model);
-            $imageName = $this->_repository->getImageFile();
-            if ($this->_repository->deleteImage()) {
-                $this->delete($imageName);
-            }
-        }
-    }
-
-    /**
-     * delete all images
-     */
-    protected function deleteAll()
-    {
-        /** @var ActiveRecord $images */
-        $images = $this->findImages()->all();
-
-        foreach ($images as $model) {
-            $this->_repository->setModel($model);
-            $imageName = $this->_repository->getImageFile();
-
-            if ($this->_repository->deleteImage()) {
-                $this->delete($imageName);
-            }
-        }
-
-        if ($this->removeDirectoryOnDelete) {
-            $path = $this->getThumbPath();
-            FileHelper::removeDirectory($path);
-        }
-
-        parent::deleteAll();
     }
 
     /**
