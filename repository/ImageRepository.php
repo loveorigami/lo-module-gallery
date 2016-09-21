@@ -8,9 +8,7 @@ use lo\core\helpers\ArrayHelper;
 use lo\modules\gallery\models\GalleryItem;
 use Yii;
 use yii\base\InvalidParamException;
-use yii\base\Model;
 use yii\base\Object;
-use yii\web\NotFoundHttpException;
 
 /**
  * Class ImageRepository
@@ -32,19 +30,14 @@ class ImageRepository extends Object implements ImageRepositoryInterface
     protected $model;
 
     /**
-     * @param $id
-     * @return ActiveRecord
+     * @return GalleryItem
      */
-    public function getModel($id = 0)
+    public function getModel()
     {
         if (!$this->model) {
-            if (!$id) {
-                $this->model = new $this->modelClass;
-                $this->model->entity = $this->entity;
-                $this->model->owner_id = $this->ownerId;
-            } else {
-                $this->model = $this->findModel($id);
-            }
+            $this->model = new $this->modelClass;
+            $this->model->entity = $this->entity;
+            $this->model->owner_id = $this->ownerId;
         }
 
         return $this->model;
@@ -55,26 +48,10 @@ class ImageRepository extends Object implements ImageRepositoryInterface
      */
     public function setModel($model)
     {
-        if(!($model instanceof $this->modelClass)) {
-            throw new InvalidParamException('Model must be instanceof '. $this->modelClass);
+        if (!($model instanceof $this->modelClass)) {
+            throw new InvalidParamException('Model must be instanceof ' . $this->modelClass);
         }
         $this->model = $model;
-    }
-
-    /**
-     * @param integer $id
-     * @return Model $model
-     * @throws NotFoundHttpException
-     */
-    protected function findModel($id)
-    {
-        /** @var ActiveRecord $class */
-        $class = $this->modelClass;
-        if (($model = $class::findOne($id)) !== null) {
-            return $model;
-        } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
-        }
     }
 
     /**
@@ -101,9 +78,7 @@ class ImageRepository extends Object implements ImageRepositoryInterface
      */
     protected function loadModel($data)
     {
-        $id = ArrayHelper::getValue($data, 'id');
-
-        $model = $this->getModel($id);
+        $model = $this->getModel();
 
         $scenario = $name = ArrayHelper::getValue($data, 'scenario', $model::SCENARIO_UPDATE);
         $model->scenario = $scenario;

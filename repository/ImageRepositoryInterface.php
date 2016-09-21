@@ -28,19 +28,6 @@ interface ImageRepositoryInterface
     public function setModel($model);
 
     /**
-     * query find()
-     * @param array $ids
-     * @return \lo\core\db\ActiveQuery
-     */
-    public function findImages($ids = []);
-
-    /**
-     * @param array $data
-     * @return array
-     */
-    public function updateImages($data);
-
-    /**
      * @param $data
      * @return mixed
      */
@@ -62,15 +49,30 @@ interface ImageRepositoryInterface
     public function getImageFile();
 
     /**
+     * @return string
+     */
+    public function oldImage();
+
+    /**
+     * query find()
+     * @param array $ids
+     * @return \lo\core\db\ActiveQuery
+     */
+    public function findImages($ids = []);
+
+    /**
+     * @param array $data
+     * @return array
+     */
+    public function updateImages($data);
+
+    /**
      * Сортировка
      * @param array $ids
      * @return array
      */
     public function reOrder($ids);
 
-    /**
-     * @return string
-     */
-    public function oldImage();
+
 
 }
