@@ -203,6 +203,15 @@ class GalleryImageBehavior extends GalleryBehavior
     }
 
     /**
+     * delete images
+     * @param array $ids
+     */
+    public function statusImages($ids = [])
+    {
+
+    }
+
+    /**
      * delete all images
      */
     protected function deleteAll()

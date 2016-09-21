@@ -70,6 +70,7 @@ class GalleryInput extends InputWidget
             $images[] = [
                 'id' => $image->id,
                 'pos' => $image->pos,
+                'status' => $image->status,
                 'name' => (string)$image->name,
                 'description' => (string)$image->description,
                 'preview' => $this->behavior->getThumbUploadUrl($image->image, $image::THUMB_TMB),
@@ -83,17 +84,18 @@ class GalleryInput extends InputWidget
             'galleryId' => $this->model->getPrimaryKey(),
         ];
 
-        $opts = array(
+        $opts = [
             //'hasName' => $this->behavior->hasName ? true : false,
             //'hasDesc' => $this->behavior->hasDescription ? true : false,
-            'uploadUrl' => Url::to($baseUrl + ['action' => 'ajaxUpload']),
+            'uploadUrl' => Url::to($baseUrl + ['action' => 'upload']),
             'deleteUrl' => Url::to($baseUrl + ['action' => 'delete']),
-            'updateUrl' => Url::to($baseUrl + ['action' => 'changeData']),
-            'arrangeUrl' => Url::to($baseUrl + ['action' => 'order']),
+            'updateUrl' => Url::to($baseUrl + ['action' => 'update']),
+            'orderUrl' => Url::to($baseUrl + ['action' => 'order']),
+            'statusUrl' => Url::to($baseUrl + ['action' => 'status']),
             'nameLabel' => Yii::t('lo/gallery', 'Name'),
             'descriptionLabel' => Yii::t('lo/gallery', 'Description'),
             'photos' => $images,
-        );
+        ];
 
         $opts = Json::encode($opts);
         $view = $this->getView();

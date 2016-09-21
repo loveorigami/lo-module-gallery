@@ -7,11 +7,12 @@
         nameLabel: 'Name',
         descriptionLabel: 'Description',
         hasName: true,
-        hasDesc: true,
+        hasDesc: false,
         uploadUrl: '',
         deleteUrl: '',
         updateUrl: '',
-        arrangeUrl: '',
+        orderUrl: '',
+        statusUrl: '',
         photos: []
     };
 
@@ -27,15 +28,16 @@
                 $gallery.addClass('no-name-no-desc');
                 $('.edit-selected', $gallery).hide();
             }
-            else
+            else {
                 $gallery.addClass('no-name');
-
+            }
         } else if (!opts.hasDesc)
             $gallery.addClass('no-desc');
 
         var $log = $('.log', $gallery);
         var $sorter = $('.sorter', $gallery);
         var $images = $('.images', $sorter);
+
         var $editorModal = $('.editor-modal', $gallery);
         var $progressOverlay = $('.progress-overlay', $gallery);
         var $uploadProgress = $('.upload-progress', $progressOverlay);
@@ -75,6 +77,7 @@
         }
 
         var photoTemplate = '<div class="photo col-md-2 col-sm-6 col-xs-12">'
+            + '<div class="photo-wrap">'
             + '<div class="image-preview"><img src=""/></div>'
             + '<div class="caption">';
         if (opts.hasName) {
@@ -85,29 +88,35 @@
         }
         photoTemplate += '</div>'
             + '<div class="wrap-actions">'
-            + '<div class="actions pull-right btn-group">';
+            + '<div class="actions pull-right">';
         if (opts.hasName || opts.hasDesc) {
-            photoTemplate += '<span class="edit-photo btn btn-primary btn-xs"><i class="glyphicon glyphicon-pencil glyphicon-white"></i></span>';
+            photoTemplate += '<span class="edit-photo btn btn-primary btn-xs"><i class="glyphicon glyphicon-pencil glyphicon-white"></i></span> ';
         }
+        photoTemplate += '<span class="status-photo btn btn-primary btn-xs"><i class="glyphicon glyphicon-eye-open glyphicon-white"></i></span> ';
         photoTemplate += '<span class="delete-photo btn btn-danger btn-xs"><i class="glyphicon glyphicon-remove glyphicon-white"></i></span>'
             + '</div>'
             + '<div class="pull-left"><input type="checkbox" class="photo-select"/></div>'
             + '</div>'
+            + '</div>'
             + '</div>';
 
 
-        function addPhoto(id, src, name, description, pos) {
+        function addPhoto(img) {
             var photo = $(photoTemplate);
-            photos[id] = photo;
-            photo.data('id', id);
-            photo.data('pos', pos);
+            photos[img['id']] = photo;
 
-            $('img', photo).attr('src', src);
+            photo.data('id', img['id']);
+            photo.data('pos', img['pos']);
+            photo.data('status', img['status']);
+
+            $('img', photo).attr('src', img['preview']);
+            $('.photo-wrap', photo).addClass('active' + img['status']);
+
             if (opts.hasName) {
-                $('.caption h5', photo).text(name);
+                $('.caption h5', photo).text(img['name']);
             }
             if (opts.hasDesc) {
-                $('.caption p', photo).text(description);
+                $('.caption p', photo).text(img['description']);
             }
 
             $images.append(photo);
@@ -129,6 +138,21 @@
             if (l > 0) {
                 $editorModal.modal('show');
             }
+        }
+
+        function statusPhotos(ids) {
+            $.ajax({
+                type: 'POST',
+                url: opts.statusUrl,
+                data: 'id[]=' + ids.join('&id[]=') + csrfParams,
+                success: function (t) {
+                    if (t == 'OK') {
+                        for (var i = 0, l = ids.length; i < l; i++) {
+                            //photos[ids[i]].addClass('danger')
+                        }
+                    }
+                }
+            });
         }
 
         function removePhotos(ids) {
@@ -168,6 +192,15 @@
             return false;
         }
 
+        function statusClick(e) {
+            e.preventDefault();
+            var photo = $(this).closest('.photo');
+            var id = photo.data('id');
+            var status = photo.data('status');
+            statusPhotos([id]);
+            return false;
+        }
+
         function updateButtons() {
             var selectedCount = $('.photo.selected', $sorter).length;
             $('.select_all', $gallery).prop('checked', $('.photo', $sorter).length == selectedCount);
@@ -190,6 +223,7 @@
         $images
             .on('click', '.photo .delete-photo', deleteClick)
             .on('click', '.photo .edit-photo', editClick)
+            .on('click', '.photo .status-photo', statusClick)
             .on('click', '.photo .photo-select', selectChanged);
 
 
@@ -201,7 +235,7 @@
             });
             $.ajax({
                 type: 'POST',
-                url: opts.arrangeUrl,
+                url: opts.orderUrl,
                 data: data.join('&') + csrfParams,
                 dataType: "json"
             }).done(function (data) {
@@ -242,13 +276,7 @@
                             var resp = JSON.parse(this.response);
                             if (resp['result']) {
                                 var img = resp['image'];
-                                addPhoto(
-                                    img['id'],
-                                    img['preview'],
-                                    img['name'],
-                                    img['description'],
-                                    img['pos']
-                                );
+                                addPhoto(img);
                                 ids.push(img['id']);
                             }
                             else {
@@ -348,13 +376,7 @@
                 }).done(function (resp) {
                     if (resp['result']) {
                         var img = resp['image'];
-                        addPhoto(
-                            img['id'],
-                            img['preview'],
-                            img['name'],
-                            img['description'],
-                            img['pos']
-                        );
+                        addPhoto(img);
                         ids.push(img['id']);
                         $uploadProgress.css('width', '100%');
                         $progressOverlay.hide();
@@ -428,7 +450,7 @@
 
         for (var i = 0, l = opts.photos.length; i < l; i++) {
             var resp = opts.photos[i];
-            addPhoto(resp['id'], resp['preview'], resp['name'], resp['description'], resp['pos']);
+            addPhoto(resp);
         }
     }
 

@@ -13,7 +13,7 @@ class GalleryInputAsset extends AssetBundle
     ];
 
     public $css = [
-        'gallery-manager.min.css',
+        'gallery-manager.css',
     ];
 
     public $depends = [

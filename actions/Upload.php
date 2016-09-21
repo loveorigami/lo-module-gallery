@@ -64,17 +64,20 @@ class Upload extends Base
                 case 'delete':
                     return $this->delete(Yii::$app->request->post('id'));
                     break;
-                case
 
-                'ajaxUpload':
+                case 'upload':
                     return $this->ajaxUpload();
+                    break;
+
+                case 'status':
+                    return $this->status(Yii::$app->request->post('status'));
                     break;
 
                 case 'order':
                     return $this->reOrder(Yii::$app->request->post('order'));
                     break;
 
-                case 'changeData':
+                case 'update':
                     return $this->changeData(Yii::$app->request->post('photo'));
                     break;
 
@@ -102,6 +105,19 @@ class Upload extends Base
     }
 
     /**
+     * On success returns 'OK'
+     * @param $ids
+     * @throws HttpException
+     * @return string
+     */
+    private function status($ids)
+    {
+        $this->behavior->statusImages($ids);
+        Yii::$app->session->setFlash('success', 'Status success');
+        return 'OK';
+    }
+
+    /**
      * Method to handle file upload thought XHR2
      * On success returns JSON object with image info.
      * @return string
@@ -114,7 +130,7 @@ class Upload extends Base
         $data['result'] = $result;
 
         if (!$result) {
-            $data['errors'] = Html::errorSummary($this->owner, ['header'=>false]);
+            $data['errors'] = Html::errorSummary($this->owner, ['header' => false]);
         } else {
             /** @var GalleryItem $image */
             $image = $this->behavior->getModel();
@@ -125,6 +141,7 @@ class Upload extends Base
             $data['image'] = [
                 'id' => $image->id,
                 'pos' => $image->pos,
+                'status' => $image->status,
                 'name' => (string)$image->name,
                 'description' => (string)$image->description,
                 'preview' => $this->behavior->getThumbUploadUrl($image->image, $image::THUMB_TMB),
