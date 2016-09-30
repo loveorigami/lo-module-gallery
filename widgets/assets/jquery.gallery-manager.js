@@ -199,9 +199,7 @@
         function statusClick(e) {
             e.preventDefault();
             var photo = $(this).closest('.photo');
-            photo.loading();
             togglePhotos(photo, 'status');
-            photo.loading('stop');
             return false;
         }
 

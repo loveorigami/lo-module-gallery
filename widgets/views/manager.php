@@ -1,7 +1,16 @@
 <?php
 use yii\helpers\Html;
 
+$this->params['loading'] = [
+    'element' => '.sorter',
+    'options' => [
+        'stoppable' => false,
+        'message' => 'Working...'
+        // and more here http://carlosbonetti.github.io/jquery-loading
+    ]
+]
 ?>
+
 <?php echo Html::beginTag('div', $this->context->options); ?>
 <!-- Gallery Toolbar -->
 
