@@ -101,7 +101,7 @@
             + '</div>';
 
 
-        function addPhoto(img) {
+        function loadPhoto(img) {
             var photo = $(photoTemplate);
             photos[img['id']] = photo;
 
@@ -119,7 +119,6 @@
                 $('.caption p', photo).text(img['description']);
             }
 
-            $images.append(photo);
             return photo;
         }
 
@@ -140,19 +139,24 @@
             }
         }
 
-        function statusPhotos(ids) {
+        function togglePhotos(photo, attr) {
+            var id = photo.data('id');
+            var data = [];
+            data.push('photo[' + photo.data('id') + '][' + attr + ']=' + photo.data(attr));
             $.ajax({
                 type: 'POST',
                 url: opts.statusUrl,
-                data: 'id[]=' + ids.join('&id[]=') + csrfParams,
-                success: function (t) {
-                    if (t == 'OK') {
-                        for (var i = 0, l = ids.length; i < l; i++) {
-                            //photos[ids[i]].addClass('danger')
-                        }
+                data: data.join('&') + csrfParams,
+                dataType: "json"
+            }).done(function (resp) {
+                var img = loadPhoto(resp);
+                $('.photo', $gallery).each(function () {
+                    if (id == $(this).data('id')) {
+                        $(this).replaceWith(img);
                     }
-                }
+                });
             });
+
         }
 
         function removePhotos(ids) {
@@ -195,9 +199,9 @@
         function statusClick(e) {
             e.preventDefault();
             var photo = $(this).closest('.photo');
-            var id = photo.data('id');
-            var status = photo.data('status');
-            statusPhotos([id]);
+            photo.loading();
+            togglePhotos(photo, 'status');
+            photo.loading('stop');
             return false;
         }
 
@@ -276,7 +280,8 @@
                             var resp = JSON.parse(this.response);
                             if (resp['result']) {
                                 var img = resp['image'];
-                                addPhoto(img);
+                                var photo = loadPhoto(img);
+                                $images.append(photo);
                                 ids.push(img['id']);
                             }
                             else {
@@ -376,7 +381,8 @@
                 }).done(function (resp) {
                     if (resp['result']) {
                         var img = resp['image'];
-                        addPhoto(img);
+                        var photo = loadPhoto(img);
+                        $images.append(photo);
                         ids.push(img['id']);
                         $uploadProgress.css('width', '100%');
                         $progressOverlay.hide();
@@ -450,7 +456,8 @@
 
         for (var i = 0, l = opts.photos.length; i < l; i++) {
             var resp = opts.photos[i];
-            addPhoto(resp);
+            var photo = loadPhoto(resp);
+            $images.append(photo);
         }
     }
 

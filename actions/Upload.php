@@ -12,6 +12,7 @@ use yii\helpers\Json;
 use yii\web\BadRequestHttpException;
 use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 
 
 /**
@@ -70,7 +71,7 @@ class Upload extends Base
                     break;
 
                 case 'status':
-                    return $this->status(Yii::$app->request->post('status'));
+                    return $this->status(Yii::$app->request->post('photo'));
                     break;
 
                 case 'order':
@@ -106,15 +107,30 @@ class Upload extends Base
 
     /**
      * On success returns 'OK'
-     * @param $ids
+     * @param array $data
      * @throws HttpException
      * @return string
      */
-    private function status($ids)
+    private function status($data)
     {
-        $this->behavior->statusImages($ids);
+        $images = $this->behavior->statusImages($data);
+
+        $resp = [];
+
+        foreach ($images as $image) {
+            $resp = [
+                'id' => $image->id,
+                'pos' => $image->pos,
+                'status' => $image->status,
+                'name' => (string)$image->name,
+                'description' => (string)$image->description,
+                'preview' => $this->behavior->getThumbUploadUrl($image->image, $image::THUMB_TMB),
+            ];
+        }
+
         Yii::$app->session->setFlash('success', 'Status success');
-        return 'OK';
+
+        return Json::encode($resp);
     }
 
     /**
@@ -174,9 +190,10 @@ class Upload extends Base
             $resp[] = [
                 'id' => $image->id,
                 'pos' => $image->pos,
+                'status' => $image->status,
                 'name' => (string)$image->name,
                 'description' => (string)$image->description,
-                'preview' => $this->behavior->getThumbUploadUrl($image->image, $image::THUMB_BIG),
+                'preview' => $this->behavior->getThumbUploadUrl($image->image, $image::THUMB_TMB),
             ];
         }
 

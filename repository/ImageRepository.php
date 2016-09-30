@@ -182,11 +182,20 @@ class ImageRepository extends Object implements ImageRepositoryInterface
             if (isset($data[$image->id]['description'])) {
                 $image->description = $data[$image->id]['description'];
             }
+            if (isset($data[$image->id]['status'])) {
+                $image->status = $data[$image->id]['status'] ?
+                    $model::STATUS_DRAFT :
+                    $model::STATUS_PUBLISHED;
+            }
 
             Yii::$app->db->createCommand()
                 ->update(
                     $model::tableName(),
-                    ['name' => $image->name, 'description' => $image->description],
+                    [
+                        'name' => $image->name,
+                        'description' => $image->description,
+                        'status' => $image->status
+                    ],
                     ['id' => $image->id]
                 )->execute();
         }

@@ -119,12 +119,23 @@ class GalleryImageBehavior extends GalleryBehavior
     }
 
     /**
-     * @param array $order
+     * @param array $ids [1, 2, 10] etc.
      * @return array
      */
-    public function reOrder($order)
+    public function reOrder($ids)
     {
-        return $this->_repository->reOrder($order);
+        return $this->_repository->reOrder($ids);
+    }
+
+    /**
+     * change status
+     * @param array $data
+     * @return array
+     */
+    public function statusImages($data)
+    {
+        $updateData = $this->_repository->updateImages($data);
+        return $updateData;
     }
 
     /**
@@ -200,15 +211,6 @@ class GalleryImageBehavior extends GalleryBehavior
                 $this->delete($imageName);
             }
         }
-    }
-
-    /**
-     * delete images
-     * @param array $ids
-     */
-    public function statusImages($ids = [])
-    {
-
     }
 
     /**
