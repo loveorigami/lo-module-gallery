@@ -71,6 +71,7 @@ class GalleryInput extends InputWidget
                 'id' => $image->id,
                 'pos' => $image->pos,
                 'status' => $image->status,
+                'on_main' => $image->on_main,
                 'name' => (string)$image->name,
                 'description' => (string)$image->description,
                 'preview' => $this->behavior->getThumbUploadUrl($image->image, $image::THUMB_TMB),

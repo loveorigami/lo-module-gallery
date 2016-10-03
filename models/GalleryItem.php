@@ -15,6 +15,7 @@ use lo\core\db\ActiveRecord;
  * @property string $description
  * @property string $path
  * @property integer $status
+ * @property integer $on_main
  * @property integer $pos
  * @property integer $created_at
  * @property integer $updated_at

@@ -187,6 +187,11 @@ class ImageRepository extends Object implements ImageRepositoryInterface
                     $model::STATUS_DRAFT :
                     $model::STATUS_PUBLISHED;
             }
+            if (isset($data[$image->id]['on_main'])) {
+                $image->on_main = $data[$image->id]['on_main'] ?
+                    $model::STATUS_DRAFT :
+                    $model::STATUS_PUBLISHED;
+            }
 
             Yii::$app->db->createCommand()
                 ->update(
@@ -194,7 +199,8 @@ class ImageRepository extends Object implements ImageRepositoryInterface
                     [
                         'name' => $image->name,
                         'description' => $image->description,
-                        'status' => $image->status
+                        'status' => $image->status,
+                        'on_main' => $image->on_main
                     ],
                     ['id' => $image->id]
                 )->execute();

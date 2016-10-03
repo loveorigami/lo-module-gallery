@@ -89,11 +89,16 @@
         photoTemplate += '</div>'
             + '<div class="wrap-actions">'
             + '<div class="actions pull-right">';
+
+        photoTemplate += '<span class="onmain-photo btn btn-xs"><i class="glyphicon  glyphicon-white"></i></span> ';
+        photoTemplate += '<span class="status-photo btn btn-xs"><i class="glyphicon  glyphicon-white"></i></span> ';
+
+
         if (opts.hasName || opts.hasDesc) {
             photoTemplate += '<span class="edit-photo btn btn-primary btn-xs"><i class="glyphicon glyphicon-pencil glyphicon-white"></i></span> ';
         }
-        photoTemplate += '<span class="status-photo btn btn-primary btn-xs"><i class="glyphicon glyphicon-eye-open glyphicon-white"></i></span> ';
-        photoTemplate += '<span class="delete-photo btn btn-danger btn-xs"><i class="glyphicon glyphicon-remove glyphicon-white"></i></span>'
+
+        photoTemplate += '<span class="delete-photo btn btn-primary btn-xs"><i class="glyphicon glyphicon-remove glyphicon-white"></i></span>'
             + '</div>'
             + '<div class="pull-left"><input type="checkbox" class="photo-select"/></div>'
             + '</div>'
@@ -108,6 +113,7 @@
             photo.data('id', img['id']);
             photo.data('pos', img['pos']);
             photo.data('status', img['status']);
+            photo.data('on_main', img['on_main']);
 
             $('img', photo).attr('src', img['preview']);
             $('.photo-wrap', photo).addClass('active' + img['status']);
@@ -117,6 +123,18 @@
             }
             if (opts.hasDesc) {
                 $('.caption p', photo).text(img['description']);
+            }
+
+            if (img['status']) {
+                $('.status-photo', photo).addClass('btn-primary').children('i').addClass('glyphicon-eye-open');
+            } else {
+                $('.status-photo', photo).addClass('btn-danger').children('i').addClass('glyphicon-minus');
+            }
+
+            if (img['on_main']) {
+                $('.onmain-photo', photo).addClass('btn-success').children('i').addClass('glyphicon-home');
+            } else {
+                $('.onmain-photo', photo).addClass('btn-primary').children('i').addClass('glyphicon-list');
             }
 
             return photo;
@@ -203,6 +221,13 @@
             return false;
         }
 
+        function onmainClick(e) {
+            e.preventDefault();
+            var photo = $(this).closest('.photo');
+            togglePhotos(photo, 'on_main');
+            return false;
+        }
+
         function updateButtons() {
             var selectedCount = $('.photo.selected', $sorter).length;
             $('.select_all', $gallery).prop('checked', $('.photo', $sorter).length == selectedCount);
@@ -226,6 +251,7 @@
             .on('click', '.photo .delete-photo', deleteClick)
             .on('click', '.photo .edit-photo', editClick)
             .on('click', '.photo .status-photo', statusClick)
+            .on('click', '.photo .onmain-photo', onmainClick)
             .on('click', '.photo .photo-select', selectChanged);
 
 
