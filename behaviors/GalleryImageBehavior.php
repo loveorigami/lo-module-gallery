@@ -3,6 +3,7 @@
 namespace lo\modules\gallery\behaviors;
 
 use abeautifulsite\SimpleImage;
+use Closure;
 use Exception;
 use lo\core\db\ActiveQuery;
 use lo\core\db\ActiveRecord;
@@ -378,9 +379,44 @@ class GalleryImageBehavior extends GalleryBehavior
         $width = ArrayHelper::getValue($config, 'width');
         $height = ArrayHelper::getValue($config, 'height');
         $quality = ArrayHelper::getValue($config, 'quality', 100);
+        $mode = ArrayHelper::getValue($config, 'mode', 'thumb');
+        $watermark = ArrayHelper::getValue($config, 'watermark');
 
         $img = new SimpleImage($path);
-        $img->thumbnail($width, $height)->save($thumbPath, $quality);
+
+        switch ($mode) {
+            case 'best_fit':
+                $img->$mode($width, $height);
+                break;
+            default:
+                $img->thumbnail($width, $height);
+        }
+
+        $overlay = $this->getWatermark($watermark, $img);
+
+        if (is_file($overlay)) {
+            // Overlay watermark.png at 50% opacity at the bottom-right of the image with a 10 pixel horizontal and vertical margin
+            $img->overlay($overlay, 'bottom right', .5, -10, -10);
+        }
+
+        $img->save($thumbPath, $quality);
+    }
+
+    /**
+     * @param $path
+     * @param $img
+     * @return bool|mixed|null|string
+     */
+    protected function getWatermark($path, $img)
+    {
+        if ($path) {
+            $wm =  $path instanceof Closure
+                ? call_user_func($path, $img)
+                : $path;
+           return  Yii::getAlias($wm);
+        } else {
+            return null;
+        }
     }
 
 }

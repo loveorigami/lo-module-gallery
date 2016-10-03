@@ -90,11 +90,12 @@
             + '<div class="wrap-actions">'
             + '<div class="actions pull-right">';
 
-        photoTemplate += '<span class="onmain-photo btn btn-xs" data-toggle="tooltip" title="на главной"><i class="glyphicon  glyphicon-white"></i></span> ';
-        photoTemplate += '<span class="status-photo btn btn-xs" data-toggle="tooltip" title="статус"><i class="glyphicon  glyphicon-white"></i></span> ';
+        photoTemplate += '<span class="onmain-photo btn btn-xs" data-toggle="tooltip" title="на главной"><i class="glyphicon"></i></span> ';
+        photoTemplate += '<span class="status-photo btn btn-xs" data-toggle="tooltip" title="статус"><i class="glyphicon"></i></span> ';
+        photoTemplate += '<a class="preview-photo btn btn-primary btn-xs" data-toggle="tooltip" title="просмотр"><i class="glyphicon glyphicon-zoom-in"></i></a> ';
 
         if (opts.hasName || opts.hasDesc) {
-            photoTemplate += '<span class="edit-photo btn btn-primary btn-xs" data-toggle="tooltip" title="редактировать"><i class="glyphicon glyphicon-pencil glyphicon-white"></i></span> ';
+            photoTemplate += '<span class="edit-photo btn btn-primary btn-xs" data-toggle="tooltip" title="редактировать"><i class="glyphicon glyphicon-pencil"></i></span> ';
         }
 
         photoTemplate += '<span class="delete-photo btn btn-primary btn-xs" data-toggle="tooltip" title="удалить"><i class="glyphicon glyphicon-remove glyphicon-white"></i></span>'
@@ -115,6 +116,9 @@
             photo.data('on_main', img['on_main']);
 
             $('img', photo).attr('src', img['preview']);
+
+            $('a.preview-photo', photo).attr('href', img['image']);
+
             $('.photo-wrap', photo).addClass('active' + img['status']);
 
             if (opts.hasName) {
