@@ -90,15 +90,14 @@
             + '<div class="wrap-actions">'
             + '<div class="actions pull-right">';
 
-        photoTemplate += '<span class="onmain-photo btn btn-xs"><i class="glyphicon  glyphicon-white"></i></span> ';
-        photoTemplate += '<span class="status-photo btn btn-xs"><i class="glyphicon  glyphicon-white"></i></span> ';
-
+        photoTemplate += '<span class="onmain-photo btn btn-xs" data-toggle="tooltip" title="на главной"><i class="glyphicon  glyphicon-white"></i></span> ';
+        photoTemplate += '<span class="status-photo btn btn-xs" data-toggle="tooltip" title="статус"><i class="glyphicon  glyphicon-white"></i></span> ';
 
         if (opts.hasName || opts.hasDesc) {
-            photoTemplate += '<span class="edit-photo btn btn-primary btn-xs"><i class="glyphicon glyphicon-pencil glyphicon-white"></i></span> ';
+            photoTemplate += '<span class="edit-photo btn btn-primary btn-xs" data-toggle="tooltip" title="редактировать"><i class="glyphicon glyphicon-pencil glyphicon-white"></i></span> ';
         }
 
-        photoTemplate += '<span class="delete-photo btn btn-primary btn-xs"><i class="glyphicon glyphicon-remove glyphicon-white"></i></span>'
+        photoTemplate += '<span class="delete-photo btn btn-primary btn-xs" data-toggle="tooltip" title="удалить"><i class="glyphicon glyphicon-remove glyphicon-white"></i></span>'
             + '</div>'
             + '<div class="pull-left"><input type="checkbox" class="photo-select"/></div>'
             + '</div>'

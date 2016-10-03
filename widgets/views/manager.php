@@ -21,12 +21,16 @@ $this->params['loading'] = [
             <i class="glyphicon glyphicon-plus"></i><?php echo Yii::t('lo/gallery', 'Add…'); ?>
             <?= $html; ?>
         </div>
-        <label class="btn btn-default">
-            <input type="checkbox" style="margin-right: 4px;" class="select_all"><?php echo Yii::t(
-                'lo/gallery',
-                'Select all'
-            ); ?>
-        </label>
+
+        <div class="btn-group">
+            <label class="btn btn-default">
+                <input type="checkbox" style="margin: 0 5px 0 0" class="select_all"><?php echo Yii::t(
+                    'lo/gallery',
+                    'Select all'
+                ); ?>
+            </label>
+        </div>
+
         <div class="btn btn-default disabled edit-selected">
             <i class="glyphicon glyphicon-pencil"></i>
         </div>
