@@ -392,7 +392,7 @@ class GalleryImageBehavior extends GalleryBehavior
                 $img->thumbnail($width, $height);
         }
 
-        $overlay = $this->getWatermark($watermark, $img);
+        $overlay = $this->getWatermark($watermark, $img->get_width(), $img->get_height());
 
         if (is_file($overlay)) {
             // Overlay watermark.png at 50% opacity at the bottom-right of the image with a 10 pixel horizontal and vertical margin
@@ -404,14 +404,15 @@ class GalleryImageBehavior extends GalleryBehavior
 
     /**
      * @param $path
-     * @param $img
-     * @return bool|mixed|null|string
+     * @param $width
+     * @param $height
+     * @return null|string
      */
-    protected function getWatermark($path, $img)
+    protected function getWatermark($path, $width, $height)
     {
         if ($path) {
             $wm =  $path instanceof Closure
-                ? call_user_func($path, $img)
+                ? call_user_func($path, $width, $height)
                 : $path;
            return  Yii::getAlias($wm);
         } else {
