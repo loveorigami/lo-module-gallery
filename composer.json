@@ -22,7 +22,7 @@
   "require": {
     "yiisoft/yii2": "~2",
     "abeautifulsite/simpleimage": "*",
-    "mongosoft/yii2-upload-behavior": "*"
+    "loveorigami/yii2-magnific-popup": "*"
   },
   "autoload": {
     "psr-4": {
