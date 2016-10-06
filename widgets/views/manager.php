@@ -1,5 +1,8 @@
 <?php
+use lo\widgets\magnific\MagnificPopupAsset;
 use yii\helpers\Html;
+
+MagnificPopupAsset::register($this);
 
 $this->params['loading'] = [
     'element' => '.sorter',
@@ -8,7 +11,8 @@ $this->params['loading'] = [
         'message' => 'Working...'
         // and more here http://carlosbonetti.github.io/jquery-loading
     ]
-]
+];
+
 ?>
 
 <?php echo Html::beginTag('div', $this->context->options); ?>

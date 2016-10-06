@@ -209,6 +209,19 @@
             return false;
         }
 
+        function previewClick(e) {
+            e.preventDefault();
+            var items = [];
+            items.push({
+                src: $(this).attr('href')
+            });
+
+            $.magnificPopup.open({
+                type: 'image',
+                items: items
+            });
+        }
+
         function editClick(e) {
             e.preventDefault();
             var photo = $(this).closest('.photo');
@@ -255,6 +268,7 @@
             .on('click', '.photo .edit-photo', editClick)
             .on('click', '.photo .status-photo', statusClick)
             .on('click', '.photo .onmain-photo', onmainClick)
+            .on('click', '.photo .preview-photo', previewClick)
             .on('click', '.photo .photo-select', selectChanged);
 
 
