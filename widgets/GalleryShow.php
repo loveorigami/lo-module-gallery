@@ -97,18 +97,21 @@ class GalleryShow extends Widget
      */
     public function run()
     {
+        $pagination = [
+            'pageSize' => $this->pageSize,
+            'defaultPageSize' => $this->pageSize
+        ];
+
         $query = $this->gallery->findImages()->published();
 
         if ($this->onmain) {
             $query->onmain();
+            $pagination = false;
         }
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'pagination' => [
-                'pageSize' => $this->pageSize,
-                'defaultPageSize' => $this->pageSize
-            ]
+            'pagination' => $pagination
         ]);
 
         $viewParams = [
