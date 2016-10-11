@@ -105,8 +105,9 @@ class GalleryShow extends Widget
         $query = $this->gallery->findImages()->published();
 
         if ($this->onmain) {
-            $query->onmain();
+            $query->onmain()->limit($this->pageSize);
             $pagination = false;
+
         }
 
         $dataProvider = new ActiveDataProvider([
