@@ -33,6 +33,12 @@ $this->params['loading'] = [
                     'Select all'
                 ); ?>
             </label>
+            <label class="btn btn-default">
+                <input type="checkbox" style="margin: 0 5px 0 0" class="add_start"><?php echo Yii::t(
+                    'lo/gallery',
+                    'Add to the start'
+                ); ?>
+            </label>
         </div>
 
         <div class="btn btn-default disabled edit-selected">

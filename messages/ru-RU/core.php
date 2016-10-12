@@ -3,6 +3,7 @@ return [
     'Description' => 'Описание',
     'Name' => 'Название',
     'Add…' => 'Добавить…',
+    'Add to the start' => 'Добавить в начало',
     'Close' => 'Закрыть',
     'Edit information' => 'Редактирование информации',
     'Save changes' => 'Сохранить изменения',

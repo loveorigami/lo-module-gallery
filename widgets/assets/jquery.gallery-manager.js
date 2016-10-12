@@ -38,10 +38,18 @@
         var $sorter = $('.sorter', $gallery);
         var $images = $('.images', $sorter);
 
+        var $addToStartName = 'toStart';
+        var $addToStartVal = false;
+
+
         var $editorModal = $('.editor-modal', $gallery);
         var $progressOverlay = $('.progress-overlay', $gallery);
         var $uploadProgress = $('.upload-progress', $progressOverlay);
         var $editorForm = $('.form', $editorModal);
+
+        $('.add_start', $gallery).change(function () {
+            $addToStartVal = $(this).prop('checked');
+        });
 
         function htmlEscape(str) {
             return String(str)
@@ -160,6 +168,14 @@
             }
         }
 
+        function pastePhotos(photo) {
+            if ($addToStartVal) {
+                $images.prepend(photo);
+            } else {
+                $images.append(photo);
+            }
+        }
+
         function togglePhotos(photo, attr) {
             var id = photo.data('id');
             var data = [];
@@ -177,7 +193,6 @@
                     }
                 });
             });
-
         }
 
         function removePhotos(ids) {
@@ -310,9 +325,12 @@
                     var fd = new FormData();
 
                     fd.append(uploadFileName, files[i]);
+                    fd.append($addToStartName, $addToStartVal);
+
                     if (opts.csrfToken) {
                         fd.append(opts.csrfTokenName, opts.csrfToken);
                     }
+
                     var xhr = new XMLHttpRequest();
                     xhr.open('POST', opts.uploadUrl, true);
                     xhr.onload = function () {
@@ -322,7 +340,7 @@
                             if (resp['result']) {
                                 var img = resp['image'];
                                 var photo = loadPhoto(img);
-                                $images.append(photo);
+                                pastePhotos(photo);
                                 ids.push(img['id']);
                             }
                             else {
@@ -410,6 +428,7 @@
                 if (opts.csrfToken) {
                     data[opts.csrfTokenName] = opts.csrfToken;
                 }
+                data[$addToStartName] = $addToStartVal;
 
                 $.ajax({
                     type: 'POST',
@@ -423,7 +442,7 @@
                     if (resp['result']) {
                         var img = resp['image'];
                         var photo = loadPhoto(img);
-                        $images.append(photo);
+                        pastePhotos(photo);
                         ids.push(img['id']);
                         $uploadProgress.css('width', '100%');
                         $progressOverlay.hide();
@@ -498,7 +517,7 @@
         for (var i = 0, l = opts.photos.length; i < l; i++) {
             var resp = opts.photos[i];
             var photo = loadPhoto(resp);
-            $images.append(photo);
+            pastePhotos(photo);
         }
     }
 

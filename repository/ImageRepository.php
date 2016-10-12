@@ -80,13 +80,16 @@ class ImageRepository extends Object implements ImageRepositoryInterface
     {
         $model = $this->getModel();
 
-        $scenario = $name = ArrayHelper::getValue($data, 'scenario', $model::SCENARIO_UPDATE);
+        $scenario = ArrayHelper::getValue($data, 'scenario', $model::SCENARIO_UPDATE);
         $model->scenario = $scenario;
 
         if ($scenario == $model::SCENARIO_INSERT) {
+            $toStart = ArrayHelper::getValue($data, 'toStart', false);
+            $pos = $this->findImages()->count() + 1;
+
+            $model->pos = $toStart ? $pos : -$pos;
             $model->entity = $this->entity;
             $model->status = $model::STATUS_PUBLISHED;
-            $model->pos = $this->findImages()->count() + 1;
         }
 
         $name = ArrayHelper::getValue($data, 'name');
