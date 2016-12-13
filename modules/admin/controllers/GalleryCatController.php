@@ -2,6 +2,7 @@
 
 namespace lo\modules\gallery\modules\admin\controllers;
 
+use lo\modules\gallery\actions\Upload;
 use lo\modules\gallery\models\GalleryCat;
 use yii\web\Controller;
 use lo\core\actions\crud;
@@ -49,7 +50,10 @@ class GalleryCatController extends Controller
                 'class'=>crud\XEditable::class,
                 'modelClass'=>$class,
             ],
-
+            'gallery' => [
+                'class' => Upload::class,
+                'modelClass' => $class,
+            ],
         ];
     }
 
