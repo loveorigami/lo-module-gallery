@@ -1,13 +1,14 @@
 <?php
 
-use console\db\Migration;
+namespace lo\modules\gallery\migrations;
+
+use lo\core\db\Migration;
 
 class m160905_074110_gallery_item extends Migration
 {
     public $tableGroup = "gallery";
 
     const TBL = 'item';
-    //const TBL_PARENT = 'cat';
 
     public function up()
     {
@@ -33,13 +34,11 @@ class m160905_074110_gallery_item extends Migration
         $this->createIndex('idx_gallery_item_pos', $this->tn(self::TBL), 'pos');
         $this->createIndex('idx_gallery_item_main', $this->tn(self::TBL), 'on_main');
         $this->createIndex('idx_gallery_item_entity', $this->tn(self::TBL), ['entity', 'owner_id']);
-
     }
 
     public function down()
     {
         $this->dropTable($this->tn(self::TBL));
-
     }
 
 }

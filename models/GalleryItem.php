@@ -5,7 +5,7 @@ namespace lo\modules\gallery\models;
 use lo\core\db\ActiveRecord;
 
 /**
- * This is the model class for table "gallery_item".
+ * This is the model class for table "gallery__item".
  *
  * @property integer $id
  * @property string $name
