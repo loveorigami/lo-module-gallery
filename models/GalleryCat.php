@@ -18,6 +18,11 @@ class GalleryCat extends ActiveRecord
     const STATUS_DRAFT = 0;
     const STATUS_PUBLISHED = 1;
 
+    /**
+     * Gallery
+     */
+    const THUMB_TMB = 'tmb';
+    const THUMB_BIG = 'big';
     const GALLERY_ONE = 'gallery';
 
     public $gal;

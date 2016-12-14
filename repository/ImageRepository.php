@@ -87,19 +87,22 @@ class ImageRepository extends Object implements ImageRepositoryInterface
             $toStart = ArrayHelper::getValue($data, 'toStart', false);
             $pos = $this->findImages()->count() + 1;
 
-            $model->pos = $toStart ? $pos : -$pos;
+            $model->pos = $toStart ? -$pos :$pos;
             $model->entity = $this->entity;
             $model->status = $model::STATUS_PUBLISHED;
         }
 
         $name = ArrayHelper::getValue($data, 'name');
-        if ($name) $model->name = $name;
+        $model->name = $name;
 
         $image = ArrayHelper::getValue($data, 'image');
-        if ($image) $model->image = $image;
+        $model->image = $image;
 
         $path = ArrayHelper::getValue($data, 'path');
-        if ($path) $model->path = $path;
+        $model->path = $path;
+
+        $thumb = ArrayHelper::getValue($data, 'thumb');
+        $model->thumb = $thumb;
 
         return $model;
     }

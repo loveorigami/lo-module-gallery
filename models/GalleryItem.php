@@ -14,6 +14,7 @@ use lo\core\db\ActiveRecord;
  * @property string $owner_id
  * @property string $description
  * @property string $path
+ * @property string $thumb
  * @property integer $status
  * @property integer $on_main
  * @property integer $pos

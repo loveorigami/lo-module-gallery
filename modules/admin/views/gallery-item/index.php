@@ -6,10 +6,10 @@ use lo\core\widgets\admin\TabMenu;
 /**
  * @var yii\web\View $this
  * @var yii\data\ActiveDataProvider $dataProvider
- * @var lo\modules\gallery\models\GalleryCat $searchModel
+ * @var lo\modules\gallery\models\GalleryItem $searchModel
  */
 
-$this->title = Yii::t('backend', 'Gallery');
+$this->title = Yii::t('backend', 'Images');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="page-index">

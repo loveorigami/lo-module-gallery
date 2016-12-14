@@ -38,7 +38,7 @@ class GalleryImageBehavior extends GalleryBehavior
      * - `quality`
      */
     public $thumbs = [
-        'tmb' => ['width' => 200, 'height' => 200, 'quality' => 90],
+        'tmb' => ['width' => 280, 'height' => 210, 'quality' => 90],
     ];
 
     /** @var string|null */
@@ -165,10 +165,30 @@ class GalleryImageBehavior extends GalleryBehavior
             'scenario' => ActiveRecord::SCENARIO_INSERT,
             'name' => $this->getOriginalFileName(),
             'image' => $this->fileName,
-            'path' => $this->resolvePath($this->path),
+            'path' => $this->getAttrPath($this->path),
+            'thumb' => $this->getAttrPath($this->thumbPath),
         ];
 
         $this->_repository->saveImage($data);
+    }
+
+    /**
+     * @param $path
+     * @return string
+     */
+    protected function getAttrPath($path)
+    {
+        $path = $this->resolvePath($path);
+
+        if (strncmp($path, '@', 1)) {
+            // not an alias
+            return $path;
+        }
+        $pos = strpos($path, '/');
+        $alias = $pos === false ? $path : substr($path, 0, $pos);
+
+        $root = str_replace($alias, '', $path);
+        return $root;
     }
 
     /**
@@ -411,10 +431,10 @@ class GalleryImageBehavior extends GalleryBehavior
     protected function getWatermark($path, $width, $height)
     {
         if ($path) {
-            $wm =  $path instanceof Closure
+            $wm = $path instanceof Closure
                 ? call_user_func($path, $width, $height)
                 : $path;
-           return  Yii::getAlias($wm);
+            return Yii::getAlias($wm);
         } else {
             return null;
         }

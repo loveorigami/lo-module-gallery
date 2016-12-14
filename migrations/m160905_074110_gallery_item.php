@@ -25,6 +25,7 @@ class m160905_074110_gallery_item extends Migration
             'name' => $this->string(),
             'description' => $this->text(),
             'path' => $this->string(),
+            'thumb' => $this->string(),
             'image' => $this->string(),
             'pos' => $this->integer()->defaultValue(0),
             'on_main' => 'tinyint(1) NOT NULL DEFAULT 0',
