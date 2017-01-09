@@ -1,7 +1,7 @@
 <?php
 namespace lo\modules\gallery\plugins\gallery;
 
-use lo\plugins\components\BasePlugin;
+use lo\plugins\BasePlugin;
 use yii\web\View;
 
 /**

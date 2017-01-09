@@ -3,7 +3,7 @@ namespace lo\modules\gallery\widgets;
 
 use lo\modules\gallery\models\GalleryCat;
 use lo\modules\gallery\repository\ImageRepository;
-use lo\plugins\components\ShortcodeWidget;
+use yii\base\Widget;
 use yii\data\ActiveDataProvider;
 
 /**
@@ -11,7 +11,7 @@ use yii\data\ActiveDataProvider;
  * @package lo\modules\gallery\plugins\gallery
  * @author Lukyanov Andrey <loveorigami@mail.ru>
  */
-class GalleryShortcode extends ShortcodeWidget
+class GalleryShortcode extends Widget
 {
     /**
      * Default view
@@ -53,6 +53,17 @@ class GalleryShortcode extends ShortcodeWidget
      * @var integer
      */
     public $id;
+
+    /**
+     * @param string $name
+     * @param mixed $string
+     */
+    public function __set($name, $string)
+    {
+        if (property_exists($this, $name)) {
+            $this->$name = $string;
+        }
+    }
 
     /**
      * Init widget
@@ -106,7 +117,7 @@ class GalleryShortcode extends ShortcodeWidget
                 return $this->render($this->view, [
                     'dataProvider' => $dataProvider,
                     'viewParams' => $viewParams,
-                    'id' => 'w'.$this->id
+                    'id' => 'w' . $this->id
                 ]);
 
             }
