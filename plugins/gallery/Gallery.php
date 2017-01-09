@@ -6,7 +6,7 @@ use yii\web\View;
 
 /**
  * Plugin Name: Gallery
- * Version: 1.0
+ * Version: 1.1
  * Plugin URI:
  * Description: A simple gallery plugin for use shortcode [gallery id=1]
  * Author: Andrey Lukyanov
@@ -28,19 +28,14 @@ class Gallery extends BasePlugin
 
     /**
      * @param $event
-     * @return bool
      */
     public static function shortcode($event)
     {
         if (isset($event->output)) {
-
-            $shortcode = self::getShortcode([
+            $shortcode = self::addShortcode([
                 'gallery' => ['lo\modules\gallery\widgets\GalleryShortcode', 'widget']
             ]);
-
             $event->output = $shortcode->parse($event->output);
         }
-
-        return null;
     }
 }
