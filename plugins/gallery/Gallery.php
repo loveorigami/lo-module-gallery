@@ -7,14 +7,21 @@ use yii\web\View;
 
 /**
  * Plugin Name: Gallery
- * Version: 1.4
- * Plugin URI:
+ * Version: 1.6
+ * Plugin URI: https://github.com/loveorigami/lo-module-gallery/tree/master/plugins/gallery
  * Description: A simple gallery plugin for use shortcode [gallery id=1]
  * Author: Andrey Lukyanov
  * Author URI: https://github.com/loveorigami/yii2-plugins-system
  */
 class Gallery extends BaseShortcode
 {
+    public static $config = [
+        'view' => 'gallery-show',
+        'cols' => 6,
+        'limit' => 60,
+        'id' => null
+    ];
+
     /**
      * @param $event
      */
