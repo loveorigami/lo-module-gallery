@@ -12,7 +12,7 @@ use yii\data\ActiveDataProvider;
  * @package lo\modules\gallery\plugins\gallery
  * @author Lukyanov Andrey <loveorigami@mail.ru>
  */
-class GalleryShortcode extends ShortcodeWidget
+class GalleryById extends ShortcodeWidget
 {
     /**
      * Default view

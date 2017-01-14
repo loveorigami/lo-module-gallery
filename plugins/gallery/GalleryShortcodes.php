@@ -13,7 +13,7 @@ use yii\web\View;
  * Author: Andrey Lukyanov
  * Author URI: https://github.com/loveorigami/yii2-plugins-system
  */
-class Gallery extends BaseShortcode
+class GalleryShortcodes extends BaseShortcode
 {
     public static $config = [
         'view' => 'gallery-show',
@@ -29,7 +29,7 @@ class Gallery extends BaseShortcode
     {
         return [
             'gallery' => [
-                GalleryShortcode::class, 'widget'
+                GalleryById::class, 'widget'
             ]
         ];
     }
