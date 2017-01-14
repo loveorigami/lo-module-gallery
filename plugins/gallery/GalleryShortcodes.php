@@ -1,13 +1,13 @@
 <?php
 namespace lo\modules\gallery\plugins\gallery;
 
-use lo\modules\gallery\widgets\GalleryShortcode;
+use lo\modules\gallery\widgets\GalleryById;
 use lo\plugins\BaseShortcode;
 use yii\web\View;
 
 /**
  * Plugin Name: Gallery
- * Version: 1.6
+ * Version: 1.7
  * Plugin URI: https://github.com/loveorigami/lo-module-gallery/tree/master/plugins/gallery
  * Description: A simple gallery plugin for use shortcode [gallery id=1]
  * Author: Andrey Lukyanov
@@ -15,13 +15,6 @@ use yii\web\View;
  */
 class GalleryShortcodes extends BaseShortcode
 {
-    public static $config = [
-        'view' => 'gallery-show',
-        'cols' => 6,
-        'limit' => 60,
-        'id' => null
-    ];
-
     /**
      * @param $event
      */
@@ -29,7 +22,14 @@ class GalleryShortcodes extends BaseShortcode
     {
         return [
             'gallery' => [
-                GalleryById::class, 'widget'
+				'callback'=> [GalleryById::class, 'widget'],
+				'tooltip' => '[gallery id=1]',
+				'config' => [
+					'view' => 'gallery-show',
+					'cols' => 6,
+					'limit' => 60,
+					'id' => null
+				]
             ]
         ];
     }
