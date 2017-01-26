@@ -22,20 +22,20 @@ $this->params['loading'] = [
     <div class="btn-group">
 
         <div class="btn btn-success btn-file">
-            <i class="glyphicon glyphicon-plus"></i><?php echo Yii::t('lo/gallery', 'Add…'); ?>
+            <i class="glyphicon glyphicon-plus"></i><?php echo Yii::t('gallery', 'Add…'); ?>
             <?= $html; ?>
         </div>
 
         <div class="btn-group">
             <label class="btn btn-default">
                 <input type="checkbox" style="margin: 0 5px 0 0" class="select_all"><?php echo Yii::t(
-                    'lo/gallery',
+                    'gallery',
                     'Select all'
                 ); ?>
             </label>
             <label class="btn btn-default">
                 <input type="checkbox" style="margin: 0 5px 0 0" class="add_start"><?php echo Yii::t(
-                    'lo/gallery',
+                    'gallery',
                     'Add to the start'
                 ); ?>
             </label>
@@ -66,17 +66,17 @@ $this->params['loading'] = [
             <div class="modal-header">
                 <a class="close" data-dismiss="modal">×</a>
 
-                <h3 class="modal-title"><?php echo Yii::t('lo/gallery', 'Edit information') ?></h3>
+                <h3 class="modal-title"><?php echo Yii::t('gallery', 'Edit information') ?></h3>
             </div>
             <div class="modal-body">
                 <div class="form"></div>
             </div>
             <div class="modal-footer">
                 <a href="#" class="btn btn-primary save-changes">
-                    <?php echo Yii::t('lo/gallery', 'Save changes') ?>
+                    <?php echo Yii::t('gallery', 'Save changes') ?>
                 </a>
                 <a href="#" class="btn" data-dismiss="modal"><?php echo Yii::t(
-                        'lo/gallery',
+                        'gallery',
                         'Close'
                     ) ?></a>
             </div>
@@ -87,7 +87,7 @@ $this->params['loading'] = [
 <div class="overlay">
     <div class="overlay-bg">&nbsp;</div>
     <div class="drop-hint">
-        <span class="drop-hint-info"><?php echo Yii::t('lo/gallery', 'Drop Files Here…') ?></span>
+        <span class="drop-hint-info"><?php echo Yii::t('gallery', 'Drop Files Here…') ?></span>
     </div>
 </div>
 <div class="progress-overlay">
@@ -97,7 +97,7 @@ $this->params['loading'] = [
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3><?php echo Yii::t('lo/gallery', 'Uploading images…') ?></h3>
+                    <h3><?php echo Yii::t('gallery', 'Uploading images…') ?></h3>
                 </div>
                 <div class="modal-body">
                     <div class="progress ">
