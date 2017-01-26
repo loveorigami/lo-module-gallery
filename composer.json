@@ -21,7 +21,7 @@
   ],
   "require": {
     "yiisoft/yii2": "~2",
-    "abeautifulsite/simpleimage": "dev-master",
+    "abeautifulsite/simpleimage": "~3.2",
     "loveorigami/yii2-magnific-popup": "dev-master"
   },
   "autoload": {
