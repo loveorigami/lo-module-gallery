@@ -37,23 +37,6 @@ class GalleryInput extends InputWidget
     {
         parent::init();
         $this->behavior = $this->model->getBehavior($this->galleryBehavior);
-        $this->registerTranslations();
-    }
-
-    public function registerTranslations()
-    {
-        $app = Yii::$app;
-        // add module I18N category
-        if (!isset($app->i18n->translations['lo/gallery'])) {
-            $app->i18n->translations['lo/gallery'] = [
-                'class' => 'yii\i18n\PhpMessageSource',
-                'sourceLanguage' => 'en-US',
-                'basePath' => '@lo/modules/gallery/messages',
-                'fileMap' => [
-                    'lo/gallery' => 'core.php',
-                ],
-            ];
-        }
     }
 
 
@@ -94,8 +77,8 @@ class GalleryInput extends InputWidget
             'updateUrl' => Url::to($baseUrl + ['action' => 'update']),
             'orderUrl' => Url::to($baseUrl + ['action' => 'order']),
             'statusUrl' => Url::to($baseUrl + ['action' => 'status']),
-            'nameLabel' => Yii::t('lo/gallery', 'Name'),
-            'descriptionLabel' => Yii::t('lo/gallery', 'Description'),
+            'nameLabel' => Yii::t('gallery', 'Name'),
+            'descriptionLabel' => Yii::t('gallery', 'Description'),
             'photos' => $images,
         ];
 
