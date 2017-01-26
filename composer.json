@@ -21,12 +21,12 @@
   ],
   "require": {
     "yiisoft/yii2": "~2",
-    "abeautifulsite/simpleimage": "*",
-    "loveorigami/yii2-magnific-popup": "*"
+    "abeautifulsite/simpleimage": "dev-master",
+    "loveorigami/yii2-magnific-popup": "dev-master"
   },
   "autoload": {
     "psr-4": {
-      "lo\\modules\\gallery\\": ""
+      "lo\\modules\\gallery\\": "/src"
     }
   },
   "extra": {
