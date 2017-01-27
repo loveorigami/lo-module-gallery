@@ -2,7 +2,7 @@
 
 namespace lo\modules\gallery\behaviors;
 
-use abeautifulsite\SimpleImage;
+use claviska\SimpleImage;
 use Closure;
 use Exception;
 use lo\core\db\ActiveQuery;
@@ -405,21 +405,21 @@ class GalleryImageBehavior extends GalleryBehavior
         $img = new SimpleImage($path);
 
         switch ($mode) {
-            case 'best_fit':
+            case 'bestFit':
                 $img->$mode($width, $height);
                 break;
             default:
                 $img->thumbnail($width, $height);
         }
 
-        $overlay = $this->getWatermark($watermark, $img->get_width(), $img->get_height());
+        $overlay = $this->getWatermark($watermark, $img->getWidth(), $img->getHeight());
 
         if (is_file($overlay)) {
             // Overlay watermark.png at 50% opacity at the bottom-right of the image with a 10 pixel horizontal and vertical margin
             $img->overlay($overlay, 'bottom right', .5, -10, -10);
         }
 
-        $img->save($thumbPath, $quality);
+        $img->toFile($thumbPath, null, $quality);
     }
 
     /**
