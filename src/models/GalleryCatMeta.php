@@ -16,6 +16,7 @@ use yii\web\UploadedFile;
 class GalleryCatMeta extends MetaFields
 {
     const GALLERY_TAB = "gallery";
+    const GIN_GALLERY = '_gingallery';
 
     /**
      * @inheritdoc
@@ -34,6 +35,7 @@ class GalleryCatMeta extends MetaFields
     {
         /** @var GalleryCat $owner */
         $owner = $this->owner;
+        $gallery = self::GIN_GALLERY;
 
         return [
             "name" => [
@@ -68,18 +70,18 @@ class GalleryCatMeta extends MetaFields
                         'removeDirectoryOnDelete' => true,
                         'extensions' => 'jpeg, jpg, png, gif',
                         'maxSize' => 1024 * 1024 * 2,
-                        'path' => '@storagePath/gallery/cat/{slug}',
-                        'url' => '@storageUrl/gallery/cat/{slug}',
+                        'path' => "@storagePath/$gallery/cat/{slug}",
+                        'url' => "@storageUrl/$gallery/cat/{slug}",
                         'thumbPath' => '@storagePath/galleries/{slug}',
                         'thumbUrl' => '@storageUrl/galleries/{slug}',
                         'thumbs' => [
                             $owner::THUMB_BIG => [
                                 'width' => 1024, 'height' => 768, 'quality' => 90, 'mode' => 'best_fit',
-                                'watermark' => function ($width, $height) {
+                                'watermark' => function ($width, $height) use ($gallery){
                                     if ($width > 480 || $height > 480) {
-                                        $path = '@storagePath/gallery/watermarks/wm200.png';
+                                        $path = "@storagePath/$gallery/watermarks/wm200.png";
                                     } else {
-                                        $path = '@storagePath/gallery/watermarks/wm100.png';
+                                        $path = "@storagePath/$gallery/watermarks/wm100.png";
                                     }
                                     return $path;
                                 },
