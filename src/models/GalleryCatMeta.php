@@ -76,7 +76,7 @@ class GalleryCatMeta extends MetaFields
                         'thumbUrl' => '@storageUrl/galleries/{slug}',
                         'thumbs' => [
                             $owner::THUMB_BIG => [
-                                'width' => 1024, 'height' => 768, 'quality' => 90, 'mode' => 'best_fit',
+                                'width' => 1024, 'height' => 768, 'quality' => 90, 'mode' => 'bestFit',
                                 'watermark' => function ($width, $height) use ($gallery){
                                     if ($width > 480 || $height > 480) {
                                         $path = "@storagePath/$gallery/watermarks/wm200.png";
