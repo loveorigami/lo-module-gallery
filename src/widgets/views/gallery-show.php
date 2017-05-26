@@ -1,6 +1,7 @@
 <?php
 use lo\widgets\magnific\MagnificPopup;
 use yii\widgets\ListView;
+use yii\helpers\Html;
 
 /**
  * @var \yii\data\ActiveDataProvider $dataProvider
@@ -19,6 +20,8 @@ echo MagnificPopup::widget([
     ],
 ]);
 
+echo Html::beginTag('div', ['class' => 'row']);
+
 echo ListView::widget([
     "dataProvider" => $dataProvider,
     "itemView" => "_images",
@@ -30,5 +33,7 @@ echo ListView::widget([
     ],
     'viewParams' => $viewParams,
 ]);
+
+echo Html::endTag('div');
 
 
