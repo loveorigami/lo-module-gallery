@@ -24,8 +24,8 @@ echo Html::beginTag('div', ['class' => 'row']);
 
 echo ListView::widget([
     "dataProvider" => $dataProvider,
+    'layout' => "{items}\n<div class='clearfix'></div>{pager}",
     "itemView" => "_images",
-    'summary' => '',
     'options' => [
         'tag' => 'div',
         'id' => $id,
