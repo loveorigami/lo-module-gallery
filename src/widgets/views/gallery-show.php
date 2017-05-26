@@ -26,6 +26,7 @@ echo ListView::widget([
     'options' => [
         'tag' => 'div',
         'id' => $id,
+        'class' => 'gallery-list'
     ],
     'viewParams' => $viewParams,
 ]);
