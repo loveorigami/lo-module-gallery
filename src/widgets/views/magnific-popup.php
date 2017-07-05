@@ -1,5 +1,5 @@
 <?php
-use lo\modules\gallery\widgets\lightgallery\LightGalleryWidget;
+use lo\widgets\magnific\MagnificPopup;
 use yii\widgets\ListView;
 use yii\helpers\Html;
 
@@ -10,14 +10,13 @@ use yii\helpers\Html;
  * @var $id
  */
 
-echo LightGalleryWidget::widget([
+echo MagnificPopup::widget([
     'target' => '#' . $id,
     'options' => [
-        'thumbnail' => true,
-        'mode' => 'lg-zoom-in-big',
-        'download' => false,
-        'zoom' => false,
-        'share' => false
+        'delegate' => 'a.img-zoom',
+        'gallery' => [
+            'enabled' => true
+        ]
     ],
 ]);
 
