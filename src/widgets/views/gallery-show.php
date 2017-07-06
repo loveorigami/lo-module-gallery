@@ -14,10 +14,11 @@ echo LightGalleryWidget::widget([
     'target' => '#' . $id,
     'options' => [
         'thumbnail' => true,
-        'mode' => 'lg-zoom-in-big',
+        'selector' => '.img-zoom',
         'download' => false,
-        'zoom' => false,
-        'share' => false
+        'zoom' => true,
+        'share' => false,
+        'showThumbByDefault' => false
     ],
 ]);
 

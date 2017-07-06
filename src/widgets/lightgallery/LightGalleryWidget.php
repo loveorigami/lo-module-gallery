@@ -23,7 +23,7 @@ class LightGalleryWidget extends Widget
     public function init()
     {
         $this->registerJs();
-        $this->registerCss();
+        //$this->registerCss();
     }
 
     public function registerJs()
