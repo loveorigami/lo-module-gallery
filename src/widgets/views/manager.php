@@ -1,8 +1,19 @@
 <?php
-use lo\widgets\magnific\MagnificPopupAsset;
+
+use lo\modules\gallery\widgets\lightgallery\LightGalleryWidget;
 use yii\helpers\Html;
 
-MagnificPopupAsset::register($this);
+echo LightGalleryWidget::widget([
+    'target' => '#gallery',
+    'options' => [
+        'thumbnail' => false,
+        'selector' => '.preview-photo',
+        'download' => false,
+        'zoom' => true,
+        'share' => false,
+        'showThumbByDefault' => false
+    ],
+]);
 
 $this->params['loading'] = [
     'element' => '.sorter',

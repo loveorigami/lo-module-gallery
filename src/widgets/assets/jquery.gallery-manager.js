@@ -231,9 +231,8 @@
                 src: $(this).attr('href')
             });
 
-            $.magnificPopup.open({
-                type: 'image',
-                items: items
+            $(this).lightGallery({
+                'selector': '.preview-photo'
             });
         }
 
@@ -283,7 +282,7 @@
             .on('click', '.photo .edit-photo', editClick)
             .on('click', '.photo .status-photo', statusClick)
             .on('click', '.photo .onmain-photo', onmainClick)
-            .on('click', '.photo .preview-photo', previewClick)
+            //.on('click', '.photo .preview-photo', previewClick)
             .on('click', '.photo .photo-select', selectChanged);
 
 
