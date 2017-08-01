@@ -62,9 +62,9 @@ interface ImageRepositoryInterface
 
     /**
      * @param array $data
-     * @return array
+     * @return \lo\core\db\ActiveRecord
      */
-    public function updateImages($data);
+    public function updateImage($data);
 
     /**
      * Сортировка

@@ -22,6 +22,7 @@
   "require": {
     "yiisoft/yii2": "~2",
     "abeautifulsite/simpleimage": "~3.2",
+    "devgroup/yii2-dropzone": "*",
     "bower-asset/lightgallery": "~1.4"
   },
   "autoload": {

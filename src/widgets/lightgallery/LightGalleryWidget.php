@@ -31,7 +31,14 @@ class LightGalleryWidget extends Widget
         $view = $this->getView();
         LightGalleryAsset::register($view);
         $options = Json::encode($this->options);
-        $js = '$("' . $this->target . '").lightGallery(' . $options . ');';
+        $js = '
+            $("' . $this->target . '").lightGallery(' . $options . ');
+            $(document).ajaxComplete(function(){
+               $("' . $this->target . '").data("lightGallery").destroy(true);
+               $("' . $this->target . '").lightGallery(' . $options . ');
+            });
+        ';
+
         $view->registerJs($js);
     }
 

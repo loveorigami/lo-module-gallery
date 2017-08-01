@@ -1,6 +1,6 @@
 <?php
 
-namespace lo\modules\gallery\widgets;
+namespace lo\modules\gallery\modules\admin\widgets;
 
 use yii\web\AssetBundle;
 
@@ -8,7 +8,6 @@ class GalleryInputAsset extends AssetBundle
 {
 
     public $js = [
-        'jquery.iframe-transport.min.js',
         'jquery.gallery-manager.js',
     ];
 

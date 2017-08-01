@@ -53,6 +53,9 @@ class GalleryImageBehavior extends GalleryBehavior
     /** @var string Class name gallery */
     public $modelClass;
 
+    /** @var boolean */
+    protected $toStart;
+
     /** @var ImageRepositoryInterface $_repository */
     protected $_repository;
 
@@ -131,23 +134,31 @@ class GalleryImageBehavior extends GalleryBehavior
     /**
      * change status
      * @param array $data
-     * @return array
+     * @return ActiveRecord
      */
-    public function statusImages($data)
+    public function statusImage($data)
     {
-        $updateData = $this->_repository->updateImages($data);
+        $updateData = $this->_repository->updateImage($data);
         return $updateData;
     }
 
     /**
      * @param array $data
-     * @return array
+     * @return ActiveRecord
      */
-    public function updateImages($data)
+    public function updateImage($data)
     {
-        $updateData = $this->_repository->updateImages($data);
-        $this->renameImages($updateData);
-        return $updateData;
+        $image = $this->_repository->updateImage($data);
+        $this->renameImage($image);
+        return $image;
+    }
+
+    /**
+     * @param $toStart
+     */
+    public function setUploadPosition($toStart)
+    {
+        $this->toStart = $toStart == 'true' ? 1 : 0;
     }
 
     /**
@@ -167,6 +178,7 @@ class GalleryImageBehavior extends GalleryBehavior
             'image' => $this->fileName,
             'path' => $this->getAttrPath($this->path),
             'thumb' => $this->getAttrPath($this->thumbPath),
+            'toStart' => $this->toStart
         ];
 
         $this->_repository->saveImage($data);
@@ -192,28 +204,25 @@ class GalleryImageBehavior extends GalleryBehavior
     }
 
     /**
-     * @param ImageRepositoryInterface[] $images
+     * @param ActiveRecord $image
      */
-    protected function renameImages($images)
+    protected function renameImage($image)
     {
-        /** @var ActiveRecord $model */
-        foreach ($images as $model) {
+        $old_filename = $this->_repository->oldImage();
+        $data = ArrayHelper::toArray($image);
 
-            $this->_repository->setModel($model);
-            $old_filename = $this->_repository->oldImage();
+        if ($old_filename) {
+            $fileinfo = $this->_repository->getImagePathInfo();
+            $new_filename = $this->getFileName($fileinfo);
 
-            if ($old_filename) {
-                $fileinfo = $this->_repository->getImagePathInfo();
-                $new_filename = $this->getFileName($fileinfo);
+            $data['image'] = $new_filename;
 
-                $data['image'] = $new_filename;
-
-                if ($this->_repository->saveImage($data)) {
-                    $this->deleteThumbs($old_filename);
-                    $this->renameFile($old_filename, $new_filename);
-                };
-            }
+            if ($this->_repository->saveImage($data)) {
+                $this->deleteThumbs($old_filename);
+                $this->renameFile($old_filename, $new_filename);
+            };
         }
+
     }
 
     /**

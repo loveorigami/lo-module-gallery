@@ -1,0 +1,75 @@
+.gallery-manager {
+    position: relative;
+    min-height: 200px;
+}
+
+.gallery-manager .active1 {
+    background-color: #d1ecfc;
+    border: 1px solid #77c9fd;
+}
+
+.gallery-manager .active0 {
+    background-color: #ffd2d2;
+    border: 1px solid #ff0000;
+}
+
+.gallery-manager .sorter .col-md-2 {
+    padding-left: 1px;
+    padding-right: 1px;
+}
+
+.gallery-manager .btn-group .btn {
+    margin-bottom: 0;
+}
+
+.gallery-manager .btn-toolbar {
+    padding: 4px;
+    padding-bottom: 0;
+}
+
+.gallery-manager .photo-wrap {
+    padding: 2px;
+    margin: 2px;
+    line-height: 1;
+
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
+    -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+
+.gallery-manager .photo {
+    height: 180px;
+    display: block;
+    line-height: 1;
+}
+
+.img-thumbnail {
+    padding: 0;
+}
+
+.gallery-manager .photo a {
+    margin: 0;
+}
+
+.gallery-manager .photo .wrap-input {
+    padding: 0 2px;
+    overflow: hidden;
+}
+
+.gallery-manager .wrap-input input {
+    display: block;
+    width: 100%
+}
+
+.gallery-manager .photo .wrap-actions {
+    padding: 2px;
+    overflow: hidden;
+}
+
+.gallery-manager .image-preview {
+    height: 120px;
+    overflow: hidden;
+}

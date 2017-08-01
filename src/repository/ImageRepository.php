@@ -84,10 +84,10 @@ class ImageRepository extends Object implements ImageRepositoryInterface
         $model->scenario = $scenario;
 
         if ($scenario == $model::SCENARIO_INSERT) {
-            $toStart = ArrayHelper::getValue($data, 'toStart', false);
+            $toStart = ArrayHelper::getValue($data, 'toStart', 0);
             $pos = $this->findImages()->count() + 1;
 
-            $model->pos = $toStart ? -$pos :$pos;
+            $model->pos = $toStart ? -$pos : $pos;
             $model->entity = $this->entity;
             $model->status = $model::STATUS_PUBLISHED;
         }
@@ -133,6 +133,7 @@ class ImageRepository extends Object implements ImageRepositoryInterface
     }
 
     /**
+     * @var ActiveRecord $model
      * @return string
      */
     public function oldImage()
@@ -168,51 +169,43 @@ class ImageRepository extends Object implements ImageRepositoryInterface
 
     /**
      * @param $data
-     * @return array
+     * @return ActiveRecord
      */
-    public function updateImages($data)
+    public function updateImage($data)
     {
         /** @var GalleryItem $model */
         $model = $this->modelClass;
 
         $imageIds = array_keys($data);
 
-        /** @var GalleryItem[] $imagesToUpdate */
-        $imagesToUpdate = $this->findImages($imageIds)->all();
+        /** @var GalleryItem $image */
+        $image = $this->findImages($imageIds)->one();
 
-        foreach ($imagesToUpdate as $image) {
-
-            if (isset($data[$image->id]['name'])) {
-                $image->name = $data[$image->id]['name'];
-            }
-            if (isset($data[$image->id]['description'])) {
-                $image->description = $data[$image->id]['description'];
-            }
-            if (isset($data[$image->id]['status'])) {
-                $image->status = $data[$image->id]['status'] ?
-                    $model::STATUS_DRAFT :
-                    $model::STATUS_PUBLISHED;
-            }
-            if (isset($data[$image->id]['on_main'])) {
-                $image->on_main = $data[$image->id]['on_main'] ?
-                    $model::STATUS_DRAFT :
-                    $model::STATUS_PUBLISHED;
-            }
-
-            Yii::$app->db->createCommand()
-                ->update(
-                    $model::tableName(),
-                    [
-                        'name' => $image->name,
-                        'description' => $image->description,
-                        'status' => $image->status,
-                        'on_main' => $image->on_main
-                    ],
-                    ['id' => $image->id]
-                )->execute();
+        if (isset($data[$image->id]['name'])) {
+            $image->name = $data[$image->id]['name'];
         }
 
-        return $imagesToUpdate;
+        if (isset($data[$image->id]['description'])) {
+            $image->description = $data[$image->id]['description'];
+        }
+
+        if (isset($data[$image->id]['status'])) {
+            $image->status = $data[$image->id]['status'] ?
+                $model::STATUS_DRAFT :
+                $model::STATUS_PUBLISHED;
+        }
+
+        if (isset($data[$image->id]['on_main'])) {
+            $image->on_main = $data[$image->id]['on_main'] ?
+                $model::STATUS_DRAFT :
+                $model::STATUS_PUBLISHED;
+        }
+
+        $this->setModel(clone $image);
+        $image->name = ArrayHelper::getValue($data, $image->id . '.name');
+        $image->save();
+
+        return $image;
     }
 
     /**

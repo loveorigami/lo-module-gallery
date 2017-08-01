@@ -19,13 +19,13 @@ class LightGalleryAsset extends AssetBundle
     ];
 
     public $js = [
-        'demo/js/lightgallery.min.js',
-        'demo/js/lg-autoplay.min.js',
-        'demo/js/lg-fullscreen.min.js',
-        'demo/js/lg-share.min.js',
-        'demo/js/lg-thumbnail.min.js',
-        'demo/js/lg-video.min.js',
-        'demo/js/lg-zoom.min.js'
+        'dist/js/lightgallery.min.js',
+        'modules/lg-autoplay.min.js',
+        'modules/lg-fullscreen.min.js',
+        'modules/lg-share.min.js',
+        'modules/lg-thumbnail.min.js',
+        'modules/lg-video.min.js',
+        'modules/lg-zoom.min.js'
     ];
 
     public $depends = [

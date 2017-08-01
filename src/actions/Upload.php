@@ -4,6 +4,7 @@ namespace lo\modules\gallery\actions;
 
 use lo\core\actions\Base;
 use lo\core\db\ActiveRecord;
+use lo\core\helpers\ArrayHelper;
 use lo\modules\gallery\behaviors\GalleryImageBehavior;
 use lo\modules\gallery\models\GalleryItem;
 use Yii;
@@ -12,8 +13,6 @@ use yii\helpers\Json;
 use yii\web\BadRequestHttpException;
 use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
-use yii\web\Response;
-
 
 /**
  * Backend controller for GalleryManager widget.
@@ -47,7 +46,6 @@ class Upload extends Base
     {
         $request = Yii::$app->request;
 
-
         if ($request->isPost) {
             $pk = Yii::$app->request->get('galleryId');
             $this->galleryBehavior = Yii::$app->request->get('galleryBehavior');
@@ -60,6 +58,7 @@ class Upload extends Base
 
             $this->owner->setScenario($this->modelScenario);
             $this->behavior = $this->owner->getBehavior($this->galleryBehavior);
+            $this->behavior->setUploadPosition(Yii::$app->request->post('toStart'));
 
             switch ($action) {
                 case 'delete':
@@ -113,26 +112,11 @@ class Upload extends Base
      */
     private function status($data)
     {
-        $images = $this->behavior->statusImages($data);
+        $model = $this->behavior->statusImage($data);
+        $status = ArrayHelper::getValue($model, 'status', '');
+        Yii::$app->session->setFlash('success', 'Update status success');
 
-        $resp = [];
-
-        foreach ($images as $image) {
-            $resp = [
-                'id' => $image->id,
-                'pos' => $image->pos,
-                'status' => $image->status,
-                'on_main' => $image->on_main,
-                'name' => (string)$image->name,
-                'description' => (string)$image->description,
-                'preview' => $this->behavior->getThumbUploadUrl($image->image, $image::THUMB_TMB),
-                'image' => $this->behavior->getThumbUploadUrl($image->image, $image::THUMB_BIG),
-            ];
-        }
-
-        Yii::$app->session->setFlash('success', 'Status success');
-
-        return Json::encode($resp);
+        return Json::encode($status);
     }
 
     /**
@@ -186,26 +170,11 @@ class Upload extends Base
             throw new BadRequestHttpException('Nothing to save');
         }
 
-        $images = $this->behavior->updateImages($imagesData);
-
-        $resp = [];
-
-        foreach ($images as $image) {
-            $resp[] = [
-                'id' => $image->id,
-                'pos' => $image->pos,
-                'status' => $image->status,
-                'on_main' => $image->on_main,
-                'name' => (string)$image->name,
-                'description' => (string)$image->description,
-                'preview' => $this->behavior->getThumbUploadUrl($image->image, $image::THUMB_TMB),
-                'image' => $this->behavior->getThumbUploadUrl($image->image, $image::THUMB_BIG),
-            ];
-        }
-
+        $model = $this->behavior->updateImage($imagesData);
+        $name = ArrayHelper::getValue($model, 'name', '');
         Yii::$app->session->setFlash('success', 'Update success');
 
-        return Json::encode($resp);
+        return Json::encode($name);
     }
 
     /**
