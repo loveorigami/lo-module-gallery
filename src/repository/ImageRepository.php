@@ -202,7 +202,6 @@ class ImageRepository extends Object implements ImageRepositoryInterface
         }
 
         $this->setModel(clone $image);
-        $image->name = ArrayHelper::getValue($data, $image->id . '.name');
         $image->save();
 
         return $image;
