@@ -5,11 +5,10 @@ namespace lo\modules\gallery\plugins\gallery;
 use lo\modules\gallery\widgets\GalleryById;
 use lo\modules\gallery\widgets\ImgById;
 use lo\plugins\BaseShortcode;
-use yii\web\View;
 
 /**
  * Plugin Name: Gallery
- * Version: 1.8
+ * Version: 1.9
  * Plugin URI: https://github.com/loveorigami/lo-module-gallery/tree/master/plugins/gallery
  * Description: A simple gallery plugin for use shortcode [gallery id=1]
  * Author: Andrey Lukyanov
@@ -38,7 +37,8 @@ class GalleryShortcodes extends BaseShortcode
                 'tooltip' => '[img id=1]',
                 'config' => [
                     'id' => 1,
-                    'width' => 250
+                    'width' => 250,
+                    'pull' => ImgById::PULL
                 ]
             ]
         ];
