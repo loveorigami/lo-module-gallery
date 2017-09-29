@@ -22,8 +22,9 @@ class LightGalleryWidget extends Widget
 
     public function init()
     {
+        parent::init();
         $this->registerJs();
-        //$this->registerCss();
+        $this->registerCss();
     }
 
     public function registerJs()
@@ -48,10 +49,10 @@ class LightGalleryWidget extends Widget
         $target = $this->target;
         $css = "
             $target a img {
+                margin: 0 10px;
                 padding: 4px;
                 position: relative;
                 cursor: pointer;
-                width: 183px;
                 overflow: hidden;
             }
             $target a {
@@ -60,7 +61,7 @@ class LightGalleryWidget extends Widget
                 transition: all 0.4s ease 0.1s;
             }
         ";
-        
+
         $this->getView()->registerCss($css);
     }
 }

@@ -20,6 +20,8 @@ use lo\core\db\ActiveRecord;
  * @property integer $pos
  * @property integer $created_at
  * @property integer $updated_at
+ *
+ * @property GalleryCat $cat
  */
 class GalleryItem extends ActiveRecord
 {
@@ -43,6 +45,14 @@ class GalleryItem extends ActiveRecord
     public function metaClass()
     {
         return GalleryItemMeta::class;
+    }
+
+    /**
+     * @return \lo\core\db\ActiveQuery
+     */
+    public function getCat()
+    {
+        return $this->hasOne(GalleryCat::class, ['id' => 'owner_id']);
     }
 
 }

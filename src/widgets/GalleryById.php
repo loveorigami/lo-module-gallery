@@ -4,7 +4,6 @@ namespace lo\modules\gallery\widgets;
 use lo\modules\gallery\models\GalleryCat;
 use lo\modules\gallery\repository\ImageRepository;
 use lo\plugins\shortcodes\ShortcodeWidget;
-use yii\base\Widget;
 use yii\data\ActiveDataProvider;
 
 /**

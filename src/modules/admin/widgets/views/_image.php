@@ -45,6 +45,7 @@ $text = Html::img($gallery->getThumbUploadUrl($model->image, $model::THUMB_TMB),
             <input tabindex="-1" type="checkbox" class="photo-select"/>
         </div>
         <div class="actions pull-right">
+            <?= $model->id ?>
             <?= ImgHelper::btnOnMain($model) ?>
             <?= ImgHelper::btnStatus($model) ?>
             <?= ImgHelper::btnDelete() ?>
