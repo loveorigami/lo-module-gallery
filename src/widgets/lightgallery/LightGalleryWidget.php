@@ -49,7 +49,6 @@ class LightGalleryWidget extends Widget
         $target = $this->target;
         $css = "
             $target a img {
-                margin: 0 10px;
                 padding: 4px;
                 position: relative;
                 cursor: pointer;
@@ -59,6 +58,13 @@ class LightGalleryWidget extends Widget
                 border-bottom: none;
                 margin: 0 1px 1px 0;
                 transition: all 0.4s ease 0.1s;
+            }
+            
+            .gallery-img.pull-left {
+                margin-right:15px;
+            }
+            .gallery-img.pull-right {
+                margin-left:15px;
             }
         ";
 
