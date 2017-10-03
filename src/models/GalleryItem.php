@@ -2,6 +2,8 @@
 
 namespace lo\modules\gallery\models;
 
+use lo\core\cache\CacheHelper;
+use lo\core\cache\CacheInvalidateBehavior;
 use lo\core\db\ActiveRecord;
 
 /**
@@ -31,6 +33,8 @@ class GalleryItem extends ActiveRecord
     const THUMB_TMB = 'tmb';
     const THUMB_BIG = 'big';
 
+    const IMG_KEY = 'imgkey';
+
     /**
      * @inheritdoc
      */
@@ -45,6 +49,23 @@ class GalleryItem extends ActiveRecord
     public function metaClass()
     {
         return GalleryItemMeta::class;
+    }
+
+    /**
+     * @return array
+     */
+    public function behaviors()
+    {
+        $arr = parent::behaviors();
+
+        $arr["cache"] = [
+            'class' => CacheInvalidateBehavior::class,
+            'cacheComponent' => CacheHelper::COMMON,
+            'tags' => [
+                self::IMG_KEY
+            ]
+        ];
+        return $arr;
     }
 
     /**

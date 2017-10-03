@@ -29,7 +29,7 @@ class GalleryItemMeta extends MetaFields
                         'url' => '@storageUrl'.$owner->path,
                         'thumbPath' => '@storagePath'.$owner->thumb,
                         'thumbUrl' => '@storageUrl'.$owner->thumb,
-                    ]
+                    ],
                 ],
                 "params" => [$this->owner, "image"]
             ],

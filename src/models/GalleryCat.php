@@ -21,8 +21,13 @@ class GalleryCat extends ActiveRecord
     /**
      * Gallery
      */
-    const THUMB_TMB = 'tmb';
+    const THUMB_ORI = 'ori'; // original
     const THUMB_BIG = 'big';
+
+    const THUMB_TMB = 'tmb';
+
+
+
     const GALLERY_ONE = 'gallery';
 
     public $gal;

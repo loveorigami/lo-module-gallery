@@ -3,39 +3,36 @@
  * @var lo\modules\gallery\behaviors\GalleryImageBehavior $gallery
  * @var lo\modules\gallery\models\GalleryItem $model
  * @var string $pull
+ * @var string $img
  * @var string $width
  */
-use lo\modules\gallery\widgets\lightgallery\LightGalleryWidget;
+use lo\modules\gallery\models\GalleryCat;
+use lo\modules\gallery\widgets\ImgById;
 use yii\helpers\Html;
 
-echo LightGalleryWidget::widget([
-    'target' => '.gallery-img',
-    'options' => [
-        'thumbnail' => true,
-        'selector' => '.img-zoom',
-        'download' => false,
-        'zoom' => true,
-        'share' => false,
-        'showThumbByDefault' => false
-    ],
-]);
+$src = $gallery->getThumbUploadUrl($model->image, GalleryCat::THUMB_ORI);
 
-$img = $gallery->getThumbUploadUrl($model->image, $model::THUMB_TMB);
 $text = Html::img($img, [
-        'class' => 'img-thumbnail img-rounded img-responsive',
+        'class' => 'img-thumbnail img-rounded img-responsive ',
         'style' => $width ? 'width:' . $width . 'px;' : false,
         'title' => $model->name,
+        'alt' => $model->name,
         'data' => [
-            'thumb' => $img
+            'thumb' => $img,
+            'src' => $src,
         ]
     ]
 );
 ?>
 
-<div class="pull-<?= $pull ?> gallery-img">
-    <?= Html::a($text, $gallery->getThumbUploadUrl($model->image, $model::THUMB_BIG), [
-        'class' => 'img-zoom',
-        'title' => $model->name
+<div class="<?= $pull ?>">
+    <?= Html::a($text, $src, [
+        'class' => ImgById::IMG_CLASS,
+        'title' => $model->name,
+        'data' => [
+            'pinterest-text' => $model->name,
+            'tweet-text' => $model->name,
+        ]
     ]); ?>
 </div>
 

@@ -92,7 +92,8 @@ class FileHelper
     public static function sanitize($filename)
     {
         $filename = trim($filename);
-        return str_replace([' ', '"', '\'', '&', '/', '\\', '?', '#'], '-', $filename);
+        $filename =  str_replace([' ', '"', '\'', '&', '/', '\\', '?', '#'], '-', $filename);
+        return preg_replace('|([-]+)|s', '-', $filename);
     }
 
 }

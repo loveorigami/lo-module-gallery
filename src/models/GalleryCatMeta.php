@@ -75,16 +75,14 @@ class GalleryCatMeta extends MetaFields
                         'thumbPath' => '@storagePath/galleries/{slug}',
                         'thumbUrl' => '@storageUrl/galleries/{slug}',
                         'thumbs' => [
+                            $owner::THUMB_ORI => [
+                                'width' => 6000, 'height' => 6000, 'quality' => 90, 'mode' => 'bestFit',
+                            ],
                             $owner::THUMB_BIG => [
-                                'width' => 1024, 'height' => 768, 'quality' => 90, 'mode' => 'bestFit',
-                                'watermark' => function ($width, $height) use ($gallery){
-                                    if ($width > 480 || $height > 480) {
-                                        $path = "@storagePath/$gallery/watermarks/wm200.png";
-                                    } else {
-                                        $path = "@storagePath/$gallery/watermarks/wm100.png";
-                                    }
-                                    return $path;
-                                },
+                                'width' => 1200, 'height' => 900, 'quality' => 90, 'mode' => 'bestFit'
+                            ],
+                            $owner::THUMB_TMB => [
+                                'width' => 500, 'height' => 500, 'quality' => 90, 'mode' => 'bestFit'
                             ],
                         ],
                         'generateNewName' => function ($file) use ($owner) {
@@ -96,11 +94,11 @@ class GalleryCatMeta extends MetaFields
                             /** @var UploadedFile $file */
                             if ($file instanceof UploadedFile) {
                                 $filename = explode($gallery->originalNameDelimiter, $file->baseName);
-                                $name = $owner->slug . '_' . $filename[0] . '.' . $file->extension;
+                                $name = $filename[0] . '.' . $file->extension;
                             } else {
                                 /** @var array $file pathinfo() */
                                 $name = $file['basename']
-                                    ? $owner->slug . '_' . $file['filename']
+                                    ? $file['filename']
                                     : $owner->slug . '.' . $file['extension'];
                             }
 

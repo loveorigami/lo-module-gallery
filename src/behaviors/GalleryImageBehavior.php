@@ -274,15 +274,21 @@ class GalleryImageBehavior extends GalleryBehavior
     }
 
     /**
-     * @throws InvalidParamException
+     * @param null $profile
      */
-    protected function createThumbs()
+    protected function createThumbs($profile = null)
     {
         $filename = $this->fileName;
         $path = $this->getUploadPath($filename);
 
-        foreach ($this->thumbs as $profile => $config) {
-            $thumbPath = $this->getThumbUploadPath($filename, $profile);
+        foreach ($this->thumbs as $tmbProfile => $config) {
+
+            if ($profile && $tmbProfile != $profile) {
+                continue;
+            }
+
+            $thumbPath = $this->getThumbUploadPath($filename, $tmbProfile);
+
             if ($thumbPath !== null) {
                 if (!FileHelper::createDirectory(dirname($thumbPath))) {
                     throw new InvalidParamException("Directory specified in 'thumbPath' attribute doesn't exist or cannot be created.");
@@ -329,7 +335,7 @@ class GalleryImageBehavior extends GalleryBehavior
         if (is_file($path)) {
             if ($this->createThumbsOnRequest) {
                 $this->setFileName($filename);
-                $this->createThumbs();
+                $this->createThumbs($profile);
             }
 
             $url = $this->resolvePath($this->thumbUrl);

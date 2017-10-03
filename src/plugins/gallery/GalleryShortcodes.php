@@ -37,8 +37,8 @@ class GalleryShortcodes extends BaseShortcode
                 'tooltip' => '[img id=1]',
                 'config' => [
                     'id' => 1,
-                    'width' => 250,
-                    'pull' => ImgById::PULL
+                    'width' => 0,
+                    'pull' => ImgById::PULL_LEFT
                 ]
             ]
         ];
