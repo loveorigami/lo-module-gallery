@@ -69,7 +69,7 @@ class GalleryCatMeta extends MetaFields
                         "entity" => $owner::getEntityName(),
                         'removeDirectoryOnDelete' => true,
                         'extensions' => 'jpeg, jpg, png, gif',
-                        'maxSize' => 1024 * 1024 * 2,
+                        'maxSize' => 1024 * 1024 * 10,
                         'path' => "@storagePath/$gallery/cat/{slug}",
                         'url' => "@storageUrl/$gallery/cat/{slug}",
                         'thumbPath' => '@storagePath/galleries/{slug}',
