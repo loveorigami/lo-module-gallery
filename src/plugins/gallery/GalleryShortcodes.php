@@ -8,7 +8,7 @@ use lo\plugins\BaseShortcode;
 
 /**
  * Plugin Name: Gallery
- * Version: 1.9
+ * Version: 1.10
  * Plugin URI: https://github.com/loveorigami/lo-module-gallery/tree/master/plugins/gallery
  * Description: A simple gallery plugin for use shortcode [gallery id=1]
  * Author: Andrey Lukyanov
@@ -38,7 +38,7 @@ class GalleryShortcodes extends BaseShortcode
                 'config' => [
                     'id' => 1,
                     'width' => 0,
-                    'pull' => ImgById::PULL_LEFT
+                    'pull' => ImgById::PULL_RIGHT
                 ]
             ]
         ];
