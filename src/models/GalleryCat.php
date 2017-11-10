@@ -24,6 +24,7 @@ class GalleryCat extends ActiveRecord
     const THUMB_ORI = 'ori'; // original
     const THUMB_BIG = 'big';
 
+    const THUMB_ONE = 'one';
     const THUMB_TMB = 'tmb';
 
 

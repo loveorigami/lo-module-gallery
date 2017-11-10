@@ -132,7 +132,7 @@ class ImgById extends ShortcodeWidget
      */
     protected function getThumb($gallery, $model)
     {
-        $tmb = $this->pull == self::PULL_CENTER ? GalleryCat::THUMB_BIG : GalleryCat::THUMB_TMB;
+        $tmb = $this->pull == self::PULL_CENTER ? GalleryCat::THUMB_BIG : GalleryCat::THUMB_ONE;
         $img = $gallery->getThumbUploadUrl($model->image, $tmb);
         return $img;
     }

@@ -81,8 +81,11 @@ class GalleryCatMeta extends MetaFields
                             $owner::THUMB_BIG => [
                                 'width' => 1200, 'height' => 900, 'quality' => 90, 'mode' => 'bestFit'
                             ],
-                            $owner::THUMB_TMB => [
+                            $owner::THUMB_ONE => [
                                 'width' => 500, 'height' => 500, 'quality' => 90, 'mode' => 'bestFit'
+                            ],
+                            $owner::THUMB_TMB => [
+                                'width' => 280, 'height' => 210, 'quality' => 90
                             ],
                         ],
                         'generateNewName' => function ($file) use ($owner) {
