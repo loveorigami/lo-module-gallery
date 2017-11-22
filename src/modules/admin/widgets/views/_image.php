@@ -28,7 +28,7 @@ $text = Html::img($gallery->getThumbUploadUrl($model->image, $model::THUMB_TMB),
 
 <div class="photo-wrap active<?= $model->status ?>">
     <div class="image-preview">
-        <?= Html::a($text, $gallery->getThumbUploadUrl($model->image, $model::THUMB_BIG), [
+        <?= Html::a($text, $gallery->getUploadUrl($model->image), [
             'class' => 'preview-photo',
             'title' => $model->name,
             'data' => [
