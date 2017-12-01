@@ -9,3 +9,8 @@
         {status}
     </div>
 </div>
+<div class="row">
+    <div class="col-lg-12">
+        {gal}
+    </div>
+</div>

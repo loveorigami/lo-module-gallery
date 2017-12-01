@@ -24,7 +24,6 @@ class GalleryCatMeta extends MetaFields
     public function tabs()
     {
         $tabs = parent::tabs();
-        $tabs[self::GALLERY_TAB] = Yii::t('backend', "Gallery");
         return $tabs;
     }
 
@@ -63,7 +62,6 @@ class GalleryCatMeta extends MetaFields
                 "definition" => [
                     "class" => fields\ImageGalleryField::class,
                     "title" => Yii::t('backend', 'Gallery'),
-                    "tab" => self::GALLERY_TAB,
                     "galleryBehavior" => $owner::GALLERY_ONE,
                     'uploadOptions' => [
                         "entity" => $owner::getEntityName(),
