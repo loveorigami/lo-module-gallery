@@ -10,7 +10,7 @@ use yii\widgets\Pjax;
  */
 
 echo LightGalleryWidget::widget([
-    'target' => '#gallery',
+    'target' => '#gallery-content',
     'options' => [
         'thumbnail' => false,
         'selector' => '.preview-photo',
