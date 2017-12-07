@@ -1,4 +1,5 @@
 <?php
+
 namespace lo\modules\gallery\models;
 
 use Yii;
@@ -25,15 +26,17 @@ class GalleryItemMeta extends MetaFields
                     "class" => fields\ImagePathField::class,
                     "title" => Yii::t('backend', 'Image'),
                     'uploadOptions' => [
-                        'path' => '@storagePath'.$owner->path,
-                        'url' => '@storageUrl'.$owner->path,
-                        'thumbPath' => '@storagePath'.$owner->thumb,
-                        'thumbUrl' => '@storageUrl'.$owner->thumb,
+                        'path' => '@storagePath' . $owner->path,
+                        'url' => '@storageUrl' . $owner->path,
+                        'thumbPath' => '@storagePath' . $owner->thumb,
+                        'thumbUrl' => '@storageUrl' . $owner->thumb,
+                        'thumbs' => [
+                            $owner::THUMB_TMB => ['width' => 280, 'height' => 210, 'quality' => 90],
+                        ],
                     ],
                 ],
                 "params" => [$this->owner, "image"]
             ],
-
             "name" => [
                 "definition" => [
                     "class" => fields\TextField::class,
