@@ -7,15 +7,15 @@ use lo\core\db\ActiveRecord;
 use lo\core\helpers\ArrayHelper;
 use lo\modules\gallery\models\GalleryItem;
 use Yii;
-use yii\base\InvalidParamException;
-use yii\base\Object;
+use yii\base\InvalidArgumentException;
+use yii\base\BaseObject;
 
 /**
  * Class ImageRepository
  * @package lo\modules\gallery\behaviors
  * @author Lukyanov Andrey <loveorigami@mail.ru>
  */
-class ImageRepository extends Object implements ImageRepositoryInterface
+class ImageRepository extends BaseObject implements ImageRepositoryInterface
 {
     /** @var string */
     public $modelClass;
@@ -49,7 +49,7 @@ class ImageRepository extends Object implements ImageRepositoryInterface
     public function setModel($model)
     {
         if (!($model instanceof $this->modelClass)) {
-            throw new InvalidParamException('Model must be instanceof ' . $this->modelClass);
+            throw new InvalidArgumentException('Model must be instanceof ' . $this->modelClass);
         }
         $this->model = $model;
     }

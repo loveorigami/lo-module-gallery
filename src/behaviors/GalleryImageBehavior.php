@@ -10,7 +10,7 @@ use lo\core\db\ActiveRecord;
 use lo\modules\gallery\repository\ImageRepositoryInterface;
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
 use yii\base\Model;
 use yii\helpers\ArrayHelper;
 use yii\helpers\FileHelper;
@@ -291,7 +291,7 @@ class GalleryImageBehavior extends GalleryBehavior
 
             if ($thumbPath !== null) {
                 if (!FileHelper::createDirectory(dirname($thumbPath))) {
-                    throw new InvalidParamException("Directory specified in 'thumbPath' attribute doesn't exist or cannot be created.");
+                    throw new InvalidArgumentException("Directory specified in 'thumbPath' attribute doesn't exist or cannot be created.");
                 }
                 if (!is_file($thumbPath)) {
                     $this->generateImageThumb($config, $path, $thumbPath);

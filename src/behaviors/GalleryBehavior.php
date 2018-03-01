@@ -6,7 +6,7 @@ use Closure;
 use Yii;
 use yii\base\Behavior;
 use yii\base\InvalidConfigException;
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
 use yii\db\BaseActiveRecord;
 use yii\helpers\ArrayHelper;
 use yii\helpers\FileHelper;
@@ -126,7 +126,7 @@ class GalleryBehavior extends Behavior
                         $this->afterUpload();
                         $result = true;
                     } else {
-                        throw new InvalidParamException("Directory specified in 'path' attribute doesn't exist or cannot be created.");
+                        throw new InvalidArgumentException("Directory specified in 'path' attribute doesn't exist or cannot be created.");
                     }
                 }
             }
