@@ -67,13 +67,13 @@ class GalleryInput extends InputWidget
 
         $view = $this->getView();
         GalleryInputAsset::register($view);
+        $view->registerJs('Dropzone.autoDiscover = false;', $view::POS_END);
         $view->registerJs("
             $('#{$this->id}').galleryManager({$opts});
             $(document).ajaxComplete(function(){
                 $('#{$this->id}').galleryManager({$opts});
             });
         ");
-
         $pjaxUrl = $optsArr['pjaxUrl'];
         $pjaxContainer = $optsArr['pjaxContainer'];
 
