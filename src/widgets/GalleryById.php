@@ -1,4 +1,5 @@
 <?php
+
 namespace lo\modules\gallery\widgets;
 
 use lo\modules\gallery\models\GalleryCat;
@@ -55,6 +56,11 @@ class GalleryById extends ShortcodeWidget
     public $id;
 
     /**
+     * @var string
+     */
+    public static $autoIdPrefix = 'wg';
+
+    /**
      * Init widget
      */
     public function init()
@@ -106,7 +112,7 @@ class GalleryById extends ShortcodeWidget
                 return $this->render($this->view, [
                     'dataProvider' => $dataProvider,
                     'viewParams' => $viewParams,
-                    'id' => 'w' . $this->id
+                    'id' => self::$autoIdPrefix . $this->id
                 ]);
 
             }
