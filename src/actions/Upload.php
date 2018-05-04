@@ -41,6 +41,8 @@ class Upload extends Base
      * @return bool|string
      * @throws BadRequestHttpException
      * @throws NotFoundHttpException
+     * @throws HttpException
+     * @throws \yii\base\Exception
      */
     public function run($action)
     {
@@ -94,7 +96,6 @@ class Upload extends Base
      * Removes image with ids specified in post request.
      * On success returns 'OK'
      * @param $ids
-     * @throws HttpException
      * @return string
      */
     private function delete($ids)
@@ -107,7 +108,6 @@ class Upload extends Base
     /**
      * On success returns 'OK'
      * @param array $data
-     * @throws HttpException
      * @return string
      */
     private function status($data)
@@ -123,7 +123,7 @@ class Upload extends Base
      * Method to handle file upload thought XHR2
      * On success returns JSON object with image info.
      * @return string
-     * @throws HttpException
+     * @throws \yii\base\Exception
      */
     private function ajaxUpload()
     {

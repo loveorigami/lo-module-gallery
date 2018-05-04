@@ -95,32 +95,46 @@ class GalleryBehavior extends Behavior
     /**
      * This method is invoked before validation starts.
      * @return bool
+     * @throws \yii\base\Exception
      */
     public function uploadFile()
     {
         /** @var BaseActiveRecord $model */
         $model = $this->owner;
         $result = false;
+        $file = $model->{$this->attribute};
 
         if (in_array($model->scenario, $this->scenarios)) {
 
-            $this->_file = UploadedFile::getInstance($model, $this->attribute);
+            if ($file instanceof UploadedRemoteFile) {
+                $this->_file = $file;
+            } else {
+                $this->_file = UploadedFile::getInstance($model, $this->attribute);
+            }
 
-            if ($this->_file instanceof UploadedFile) {
+            if (
+                $this->_file instanceof UploadedFile ||
+                $this->_file instanceof UploadedRemoteFile
+            ) {
                 $this->originalFileName = $this->_file->baseName;
                 $this->_file->name = $this->getFileName($this->_file);
-                $this->fileName = $this->_file->name;
-
+                $this->fileName = $this->getFileName($this->_file);
                 $model->{$this->attribute} = $this->_file;
 
-                $validator = Validator::createValidator('image', $model, $this->attribute, [
-                    'extensions' => $this->extensions,
-                    'maxSize' => $this->maxSize,
-                ]);
-                $validator->validateAttribute($model, $this->attribute);
+                /**
+                 * for uploading file
+                 */
+                if ($this->_file instanceof UploadedFile) {
+                    $validator = Validator::createValidator('image', $model, $this->attribute, [
+                        'extensions' => $this->extensions,
+                        'maxSize' => $this->maxSize,
+                    ]);
+                    $validator->validateAttribute($model, $this->attribute);
+                }
 
                 if (!$model->errors) {
                     $path = $this->getUploadPath($this->fileName);
+
                     if (is_string($path) && FileHelper::createDirectory(dirname($path))) {
                         $this->save($this->_file, $path);
                         $this->afterUpload();
@@ -128,6 +142,8 @@ class GalleryBehavior extends Behavior
                     } else {
                         throw new InvalidArgumentException("Directory specified in 'path' attribute doesn't exist or cannot be created.");
                     }
+                } else {
+                    print_r($model->errors);
                 }
             }
         }
@@ -195,6 +211,9 @@ class GalleryBehavior extends Behavior
      */
     protected function save($file, $path)
     {
+        if ($file instanceof UploadedRemoteFile) {
+            return $file->saveAs($path, true);
+        }
         return $file->saveAs($path, $this->deleteTempFile);
     }
 

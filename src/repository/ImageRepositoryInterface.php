@@ -5,6 +5,7 @@
  * Date: 05.09.2016
  * Time: 10:40
  */
+
 namespace lo\modules\gallery\repository;
 
 /**
@@ -73,6 +74,9 @@ interface ImageRepositoryInterface
      */
     public function reOrder($ids);
 
-
+    /**
+     * @return mixed
+     */
+    public function count();
 
 }

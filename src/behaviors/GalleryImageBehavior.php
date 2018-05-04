@@ -18,6 +18,9 @@ use yii\helpers\FileHelper;
 
 /**
  * Behavior for adding gallery to any model.
+ * @property mixed $uploadPosition
+ * @property mixed $ownerId
+ * @property \yii\base\Model $model
  * @property ActiveRecord $owner
  */
 class GalleryImageBehavior extends GalleryBehavior
@@ -58,6 +61,8 @@ class GalleryImageBehavior extends GalleryBehavior
 
     /** @var ImageRepositoryInterface $_repository */
     protected $_repository;
+
+    protected $imageName;
 
     /**
      * @inheritdoc
@@ -112,6 +117,14 @@ class GalleryImageBehavior extends GalleryBehavior
     public function findImages($ids = [])
     {
         return $this->_repository->findImages($ids);
+    }
+
+    /**
+     * @return integer
+     */
+    public function count()
+    {
+        return $this->_repository->count();
     }
 
     /**
@@ -182,6 +195,19 @@ class GalleryImageBehavior extends GalleryBehavior
         ];
 
         $this->_repository->saveImage($data);
+    }
+
+    /**
+     * @return string
+     */
+    protected function getOriginalFileName()
+    {
+        if ($this->imageName) {
+            return $this->imageName;
+        } else {
+            $name = explode($this->originalNameDelimiter, $this->originalFileName);
+            return $name[0];
+        }
     }
 
     /**
@@ -275,6 +301,7 @@ class GalleryImageBehavior extends GalleryBehavior
 
     /**
      * @param null $profile
+     * @throws \yii\base\Exception
      */
     protected function createThumbs($profile = null)
     {
@@ -327,6 +354,7 @@ class GalleryImageBehavior extends GalleryBehavior
      * @param string $filename
      * @param string $profile
      * @return string|null
+     * @throws \yii\base\Exception
      */
     public function getThumbUploadUrl($filename, $profile = 'tmb')
     {
@@ -353,6 +381,7 @@ class GalleryImageBehavior extends GalleryBehavior
     /**
      * @param $profile
      * @return string
+     * @throws Exception
      */
     protected function getPlaceholderUrl($profile)
     {
@@ -408,6 +437,7 @@ class GalleryImageBehavior extends GalleryBehavior
      * @param $config
      * @param $path
      * @param $thumbPath
+     * @throws Exception
      */
     protected function generateImageThumb($config, $path, $thumbPath)
     {
@@ -453,6 +483,31 @@ class GalleryImageBehavior extends GalleryBehavior
         } else {
             return null;
         }
+    }
+
+    /**
+     * @param $entity
+     */
+    public function setEntity($entity)
+    {
+        $this->entity = $entity;
+        $this->_repository->entity = $entity;
+    }
+
+    /**
+     * @param $name
+     */
+    public function setImageName($name)
+    {
+        $this->imageName = $name;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getImageName()
+    {
+        return $this->imageName;
     }
 
 }

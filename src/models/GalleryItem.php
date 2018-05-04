@@ -53,6 +53,7 @@ class GalleryItem extends ActiveRecord
 
     /**
      * @return array
+     * @throws \yii\base\InvalidConfigException
      */
     public function behaviors()
     {

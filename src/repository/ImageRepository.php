@@ -14,6 +14,9 @@ use yii\base\BaseObject;
  * Class ImageRepository
  * @package lo\modules\gallery\behaviors
  * @author Lukyanov Andrey <loveorigami@mail.ru>
+ *
+ * @property array $imagePathInfo
+ * @property string $imageFile
  */
 class ImageRepository extends BaseObject implements ImageRepositoryInterface
 {
@@ -61,11 +64,14 @@ class ImageRepository extends BaseObject implements ImageRepositoryInterface
     public function saveImage($data)
     {
         $image = $this->loadModel($data);
+        $this->model = null;
         return $image->save();
     }
 
     /**
      * @return bool
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
      */
     public function deleteImage()
     {
@@ -168,6 +174,14 @@ class ImageRepository extends BaseObject implements ImageRepositoryInterface
     }
 
     /**
+     * @return int|string
+     */
+    public function count()
+    {
+        return $this->findImages()->count();
+    }
+
+    /**
      * @param $data
      * @return ActiveRecord
      */
@@ -210,6 +224,7 @@ class ImageRepository extends BaseObject implements ImageRepositoryInterface
     /**
      * @param array $ids
      * @return array
+     * @throws \yii\db\Exception
      */
     public function reOrder($ids)
     {
