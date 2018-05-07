@@ -32,6 +32,7 @@ $text = Html::img($img, [
         'data' => [
             'pinterest-text' => $model->name,
             'tweet-text' => $model->name,
+            'pjax' => 0
         ]
     ]); ?>
 </div>

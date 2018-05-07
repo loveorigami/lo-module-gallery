@@ -28,6 +28,7 @@ echo ListView::widget([
     "dataProvider" => $dataProvider,
     'layout' => "{items}\n<div class='clearfix'></div>{pager}",
     "itemView" => "_images",
+    "emptyText" => false,
     'options' => [
         'tag' => 'div',
         'id' => $id,
