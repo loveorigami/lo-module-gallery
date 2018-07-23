@@ -10,18 +10,21 @@ use yii\data\ActiveDataProvider;
 /**
  * Widget to manage gallery.
  * Requires Twitter Bootstrap styles to work.
+ *
  * @property ImageRepository $gallery
  */
 class GalleryShow extends Widget
 {
     /**
      * Default view
+     *
      * @var string
      */
     const VIEW = 'gallery-show';
 
     /**
      * Default columns
+     *
      * @var int
      */
     const COLS = 6;
@@ -39,6 +42,7 @@ class GalleryShow extends Widget
 
     /**
      * Thumb name
+     *
      * @var string
      */
     public $thumb;
@@ -46,6 +50,7 @@ class GalleryShow extends Widget
 
     /**
      * Rendered view
+     *
      * @var string
      */
     public $view;
@@ -57,15 +62,22 @@ class GalleryShow extends Widget
 
     /**
      * Columns in row
+     *
      * @var int
      */
     public $cols;
 
     /**
      * Limit images on page
+     *
      * @var int
      */
     public $pageSize = 60;
+
+    /**
+     * @var array
+     */
+    public $thumbOptions = [];
 
     /**
      * Init widget
@@ -93,13 +105,14 @@ class GalleryShow extends Widget
 
     /**
      * Render widget
+     *
      * @return string
      */
     public function run()
     {
         $pagination = [
             'pageSize' => $this->pageSize,
-            'defaultPageSize' => $this->pageSize
+            'defaultPageSize' => $this->pageSize,
         ];
 
         $query = $this->gallery->findImages()->published();
@@ -112,20 +125,21 @@ class GalleryShow extends Widget
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'pagination' => $pagination
+            'pagination' => $pagination,
         ]);
 
         $viewParams = [
             'gallery' => $this->gallery,
             'thumb' => $this->thumb,
+            'thumbOptions' => $this->thumbOptions,
             'big' => $this->big,
-            'cols' => $this->cols
+            'cols' => $this->cols,
         ];
 
         return $this->render($this->view, [
             'dataProvider' => $dataProvider,
             'viewParams' => $viewParams,
-            'id' => $this->id
+            'id' => $this->id,
         ]);
     }
 }

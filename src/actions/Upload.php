@@ -133,6 +133,7 @@ class Upload extends Base
 
         if (!$result) {
             $data['errors'] = Html::errorSummary($this->owner, ['header' => false]);
+
         } else {
             /** @var GalleryItem $image */
             $image = $this->behavior->getModel();

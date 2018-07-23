@@ -25,10 +25,10 @@ echo LightGalleryWidget::widget([
 echo Html::beginTag('div', ['class' => 'row']);
 
 echo ListView::widget([
-    "dataProvider" => $dataProvider,
+    'dataProvider' => $dataProvider,
     'layout' => "{items}\n<div class='clearfix'></div>{pager}",
-    "itemView" => "_images",
-    "emptyText" => false,
+    'itemView' => '_images',
+    'emptyText' => false,
     'options' => [
         'tag' => 'div',
         'id' => $id,

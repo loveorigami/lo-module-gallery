@@ -104,7 +104,7 @@ class GalleryBehavior extends Behavior
         $result = false;
         $file = $model->{$this->attribute};
 
-        if (in_array($model->scenario, $this->scenarios)) {
+        if (\in_array($model->scenario, $this->scenarios, false)) {
 
             if ($file instanceof UploadedRemoteFile) {
                 $this->_file = $file;
@@ -135,7 +135,7 @@ class GalleryBehavior extends Behavior
                 if (!$model->errors) {
                     $path = $this->getUploadPath($this->fileName);
 
-                    if (is_string($path) && FileHelper::createDirectory(dirname($path))) {
+                    if (\is_string($path) && FileHelper::createDirectory(\dirname($path))) {
                         $this->save($this->_file, $path);
                         $this->afterUpload();
                         $result = true;
