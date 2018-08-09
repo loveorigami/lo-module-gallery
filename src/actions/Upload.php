@@ -54,13 +54,14 @@ class Upload extends Base
 
             $this->owner = $this->findModel($pk);
 
-            if ($this->owner == null) {
+            if ($this->owner === null) {
                 throw new NotFoundHttpException('Gallery not found.');
             }
 
             $this->owner->setScenario($this->modelScenario);
             $this->behavior = $this->owner->getBehavior($this->galleryBehavior);
-            $this->behavior->setUploadPosition(Yii::$app->request->post('toStart'));
+            $toStart = ArrayHelper::getValue(Yii::$app->request->post(), 'toStart', 0);
+            $this->behavior->setUploadPosition($toStart);
 
             switch ($action) {
                 case 'delete':
@@ -95,6 +96,7 @@ class Upload extends Base
     /**
      * Removes image with ids specified in post request.
      * On success returns 'OK'
+     *
      * @param $ids
      * @return string
      */
@@ -102,11 +104,13 @@ class Upload extends Base
     {
         $this->behavior->deleteImages($ids);
         Yii::$app->session->setFlash('success', 'Delete success');
+
         return 'OK';
     }
 
     /**
      * On success returns 'OK'
+     *
      * @param array $data
      * @return string
      */
@@ -122,6 +126,7 @@ class Upload extends Base
     /**
      * Method to handle file upload thought XHR2
      * On success returns JSON object with image info.
+     *
      * @return string
      * @throws \yii\base\Exception
      */
@@ -181,6 +186,7 @@ class Upload extends Base
     /**
      * Saves images order according to request.
      * Variable $_POST['order'] - new arrange of image ids, to be saved
+     *
      * @param $order
      * @return string
      * @throws BadRequestHttpException

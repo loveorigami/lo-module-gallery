@@ -4,6 +4,7 @@ namespace lo\modules\gallery\modules\admin\widgets;
 
 use devgroup\dropzone\DropZone;
 use lo\modules\gallery\behaviors\GalleryImageBehavior;
+use Yii;
 use yii\db\ActiveRecord;
 use yii\helpers\Json;
 use yii\helpers\Url;
@@ -30,7 +31,7 @@ class GalleryInput extends InputWidget
 
     public $pjaxContainer = '#gallery-content';
 
-    public $options = [];
+    public $maxFiles;
 
     public function init()
     {
@@ -60,7 +61,7 @@ class GalleryInput extends InputWidget
             'deleteUrl' => Url::to($baseUrl + ['action' => 'delete']),
             'updateUrl' => Url::to($baseUrl + ['action' => 'update']),
             'orderUrl' => Url::to($baseUrl + ['action' => 'order']),
-            'statusUrl' => Url::to($baseUrl + ['action' => 'status'])
+            'statusUrl' => Url::to($baseUrl + ['action' => 'status']),
         ];
 
         $opts = Json::encode($optsArr);
@@ -95,7 +96,10 @@ class GalleryInput extends InputWidget
             'sortable' => true, // sortable flag
             'sortableOptions' => [], // sortable options
             'htmlOptions' => [], // container html options
-            'options' => [], // dropzone js options
+            'message' => Yii::t('gallery', 'Drop Files Here…'),
+            'options' => [
+                'maxFiles' => $this->maxFiles,
+            ], // dropzone js options
         ];
 
         if ($this->hasModel()) {
@@ -110,7 +114,8 @@ class GalleryInput extends InputWidget
         return $this->render('manager', [
             'gallery' => $this->behavior,
             'images' => $images,
-            'html' => $html
+            'html' => $html,
+            'maxFiles' => $this->maxFiles,
         ]);
     }
 

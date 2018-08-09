@@ -171,7 +171,7 @@ class GalleryImageBehavior extends GalleryBehavior
      */
     public function setUploadPosition($toStart)
     {
-        $this->toStart = $toStart == 'true' ? 1 : 0;
+        $this->toStart = $toStart === true ? 1 : 0;
     }
 
     /**
