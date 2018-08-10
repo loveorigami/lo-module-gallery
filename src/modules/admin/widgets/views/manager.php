@@ -7,7 +7,7 @@ use yii\widgets\Pjax;
 /**
  * @var \lo\modules\gallery\models\GalleryItem []         $images
  * @var lo\modules\gallery\behaviors\GalleryImageBehavior $gallery
- * @var int                                               $maxFiles
+ * @var string                                            $maxFilesMsg
  */
 
 echo LightGalleryWidget::widget([
@@ -24,38 +24,31 @@ echo LightGalleryWidget::widget([
 
 ?>
 <?php echo Html::beginTag('div', $this->context->options); ?>
-<?php
+<!-- Gallery Toolbar -->
+<div class="btn-toolbar">
+    <div class="btn-group">
 
-if ($maxFiles > 0 && $maxFiles <= count($images)) {
-    echo Html::tag('p', Yii::t('backend', 'Max upload files is {count}', ['count' => $maxFiles]), ['class' => 'alert alert-info']);
-} else {
-    ?>
-
-    <!-- Gallery Toolbar -->
-
-    <div class="btn-toolbar">
         <div class="btn-group">
-
-            <div class="btn-group">
-                <label class="btn btn-default">
-                    <input type="checkbox" style="margin: 0 5px 0 0" class="select_all"><?php echo Yii::t(
-                        'gallery',
-                        'Select all'
-                    ); ?>
-                </label>
-                <label class="btn btn-default">
-                    <input id="to-start" name="toStart" type="checkbox" style="margin: 0 5px 0 0">
-                    <?php echo Yii::t('gallery', 'Add to the start'); ?>
-                </label>
-            </div>
-            <div class="btn btn-default disabled remove-selected">
-                <i class="glyphicon glyphicon-remove"></i>
-            </div>
+            <label class="btn btn-default">
+                <input type="checkbox" style="margin: 0 5px 0 0" class="select_all"><?php echo Yii::t(
+                    'gallery',
+                    'Select all'
+                ); ?>
+            </label>
+            <label class="btn btn-default">
+                <input id="to-start" name="toStart" type="checkbox" style="margin: 0 5px 0 0">
+                <?php echo Yii::t('gallery', 'Add to the start'); ?>
+            </label>
+        </div>
+        <div class="btn btn-default disabled remove-selected">
+            <i class="glyphicon glyphicon-remove"></i>
         </div>
     </div>
+</div>
 
-<?php } ?>
 <?= $html ?>
+<?= $maxFilesMsg ?>
+
 <!-- Gallery Photos -->
 <?php Pjax::begin([
     'id' => 'gallery-content',

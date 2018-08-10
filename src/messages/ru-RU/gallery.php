@@ -10,4 +10,5 @@ return [
     'Select all' => 'Выбрать все',
     'Drop Files Here…' => 'Перетащите файлы сюда…',
     'Uploading images…' => 'Картинки загружаются…',
+    'Max upload files is {count}' => 'Разрешено загружать не более {count} файлов'
 ];

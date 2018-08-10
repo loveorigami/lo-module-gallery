@@ -6,8 +6,10 @@ use devgroup\dropzone\DropZone;
 use lo\modules\gallery\behaviors\GalleryImageBehavior;
 use Yii;
 use yii\db\ActiveRecord;
+use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\helpers\Url;
+use yii\web\JsExpression;
 use yii\widgets\InputWidget;
 
 /**
@@ -80,7 +82,6 @@ class GalleryInput extends InputWidget
 
         $config = [
             'url' => Url::to($baseUrl + ['action' => 'upload']), // upload url
-            'storedFiles' => [], // stores files
             'eventHandlers' => [
                 'sending' => "function(file, xhr, formData) {
                     formData.append('toStart', $('#to-start').prop('checked'));
@@ -97,9 +98,7 @@ class GalleryInput extends InputWidget
             'sortableOptions' => [], // sortable options
             'htmlOptions' => [], // container html options
             'message' => Yii::t('gallery', 'Drop Files Here…'),
-            'options' => [
-                'maxFiles' => $this->maxFiles,
-            ], // dropzone js options
+            'options' => [], // dropzone js options
         ];
 
         if ($this->hasModel()) {
@@ -109,14 +108,54 @@ class GalleryInput extends InputWidget
             $config['name'] = 'file';
         }
 
+        $maxFilesMsg = '';
+        if ($this->maxFiles) {
+            $msg = Yii::t('gallery', 'Max upload files is {count}', ['count' => $this->maxFiles]);
+            $config['storedFiles'] = $this->getStoredFiles($images);
+            $config['options']['init'] = new JsExpression('
+                    function() {
+                        this.on("maxfilesexceeded", function(file){
+                            alert("' . $msg . '");
+                        });
+                    }'
+            );
+            $config['options']['maxFiles'] = $this->maxFiles;
+            if (\count($images) >= $this->maxFiles) {
+                $maxFilesMsg = Html::tag('p', $msg, ['class' => 'alert alert-info']);
+            }
+        }
+
         $html = DropZone::widget($config);
 
         return $this->render('manager', [
             'gallery' => $this->behavior,
             'images' => $images,
             'html' => $html,
-            'maxFiles' => $this->maxFiles,
+            'maxFilesMsg' => $maxFilesMsg,
         ]);
     }
 
+    /**
+     * @param $images
+     * @return array
+     * @throws \yii\base\Exception
+     */
+    protected function getStoredFiles($images): array
+    {
+        $data = [];
+        $gallery = $this->behavior;
+        if ($this->maxFiles) {
+            foreach ($images as $model) {
+                $path = $gallery->getThumbUploadPath($model->image, $model::THUMB_TMB);
+                $filesize = $path ? filesize($path) : 0;
+                $data[] = [
+                    'name' => $model->name,
+                    'thumbnail' => $gallery->getThumbUploadUrl($model->image, $model::THUMB_TMB),
+                    'size' => $filesize,
+                ];
+            }
+        }
+
+        return $data;
+    }
 }
