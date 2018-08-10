@@ -41,9 +41,8 @@ class GalleryInput extends InputWidget
         $this->behavior = $this->model->getBehavior($this->galleryBehavior);
     }
 
-
     /** Render widget */
-    public function run()
+    public function run(): string
     {
         $images = $this->behavior->findImages()->all();
 
@@ -77,6 +76,7 @@ class GalleryInput extends InputWidget
                 $('#{$this->id}').galleryManager({$opts});
             });
         ");
+
         $pjaxUrl = $optsArr['pjaxUrl'];
         $pjaxContainer = $optsArr['pjaxContainer'];
 
