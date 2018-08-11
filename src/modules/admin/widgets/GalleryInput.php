@@ -140,6 +140,11 @@ class GalleryInput extends InputWidget
      * @return array
      * @throws \yii\base\Exception
      */
+    /**
+     * @param $images
+     * @return array
+     * @throws \yii\base\Exception
+     */
     protected function getStoredFiles($images): array
     {
         $data = [];
@@ -147,7 +152,7 @@ class GalleryInput extends InputWidget
         if ($this->maxFiles) {
             foreach ($images as $model) {
                 $path = $gallery->getThumbUploadPath($model->image, $model::THUMB_TMB);
-                $filesize = $path ? filesize($path) : 0;
+                $filesize = is_file($path) ? filesize($path) : 0;
                 $data[] = [
                     'name' => $model->name,
                     'thumbnail' => $gallery->getThumbUploadUrl($model->image, $model::THUMB_TMB),
