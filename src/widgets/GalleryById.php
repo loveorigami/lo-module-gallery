@@ -61,6 +61,11 @@ class GalleryById extends ShortcodeWidget
     public static $autoIdPrefix = 'wg';
 
     /**
+     * @var array
+     */
+    public $thumbOptions = [];
+
+    /**
      * Init widget
      */
     public function init()
@@ -106,6 +111,7 @@ class GalleryById extends ShortcodeWidget
                     'gallery' => $gallery,
                     'thumb' => $model::THUMB_TMB,
                     'big' => $model::THUMB_BIG,
+                    'thumbOptions' => $this->thumbOptions,
                     'cols' => $this->cols
                 ];
 
