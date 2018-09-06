@@ -2,6 +2,7 @@
 
 namespace lo\modules\gallery\widgets;
 
+use lo\core\db\ActiveRecord;
 use lo\modules\gallery\models\GalleryCat;
 use lo\modules\gallery\repository\ImageRepository;
 use lo\plugins\shortcodes\ShortcodeWidget;
@@ -9,43 +10,50 @@ use yii\data\ActiveDataProvider;
 
 /**
  * Class GalleryWidget
+ *
  * @package lo\modules\gallery\plugins\gallery
- * @author Lukyanov Andrey <loveorigami@mail.ru>
+ * @author  Lukyanov Andrey <loveorigami@mail.ru>
  */
 class GalleryById extends ShortcodeWidget
 {
     /**
      * Default view
+     *
      * @var string
      */
-    const VIEW = 'gallery-show';
+    protected const VIEW = 'gallery-show';
 
     /**
      * Default columns
+     *
      * @var int
      */
-    const COLS = 6;
+    protected const COLS = 6;
 
     /**
      * Default columns
+     *
      * @var int
      */
-    const LIMIT = 60;
+    protected const LIMIT = 60;
 
     /**
      * Rendered view
+     *
      * @var string
      */
     public $view;
 
     /**
      * Columns in row
+     *
      * @var int
      */
     public $cols;
 
     /**
      * Limit images on page
+     *
      * @var int
      */
     public $limit;
@@ -64,6 +72,11 @@ class GalleryById extends ShortcodeWidget
      * @var array
      */
     public $thumbOptions = [];
+
+    /**
+     * @var string
+     */
+    public $entity = GalleryCat::class;
 
     /**
      * Init widget
@@ -87,13 +100,17 @@ class GalleryById extends ShortcodeWidget
 
     /**
      * Render widget
+     *
      * @return string
      */
-    public function run()
+    public function run(): ?string
     {
         if ($this->id) {
+            /** @var ActiveRecord $entity */
+            $entity = $this->entity;
+
             /** @var GalleryCat $model */
-            $model = GalleryCat::find()->where(['id' => $this->id])->limit(1)->published()->one();
+            $model = $entity::find()->where(['id' => $this->id])->limit(1)->published()->one();
 
             if ($model) {
                 /** @var ImageRepository $gallery */
@@ -104,7 +121,7 @@ class GalleryById extends ShortcodeWidget
 
                 $dataProvider = new ActiveDataProvider([
                     'query' => $query,
-                    'pagination' => false
+                    'pagination' => false,
                 ]);
 
                 $viewParams = [
@@ -112,18 +129,20 @@ class GalleryById extends ShortcodeWidget
                     'thumb' => $model::THUMB_TMB,
                     'big' => $model::THUMB_BIG,
                     'thumbOptions' => $this->thumbOptions,
-                    'cols' => $this->cols
+                    'cols' => $this->cols,
                 ];
 
                 return $this->render($this->view, [
                     'dataProvider' => $dataProvider,
                     'viewParams' => $viewParams,
-                    'id' => self::$autoIdPrefix . $this->id
+                    'id' => self::$autoIdPrefix . $this->id,
                 ]);
 
             }
+
             return null;
         }
+
         return null;
     }
 }

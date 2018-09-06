@@ -14,12 +14,14 @@ class GalleryCatController extends Controller
 {
     /**
      * Действия
+     *
      * @return array
      */
 
-    public function actions()
+    public function actions(): array
     {
         $class = GalleryCat::class;
+
         return [
             'index' => [
                 'class' => crud\Index::class,
@@ -50,8 +52,14 @@ class GalleryCatController extends Controller
                 'class' => crud\XEditable::class,
                 'modelClass' => $class,
             ],
+
             'gallery' => [
                 'class' => Upload::class,
+                'modelClass' => $class,
+            ],
+
+            'list' => [
+                'class' => crud\ListId::class,
                 'modelClass' => $class,
             ],
         ];
