@@ -60,7 +60,7 @@ class Upload extends Base
 
             $this->owner->setScenario($this->modelScenario);
             $this->behavior = $this->owner->getBehavior($this->galleryBehavior);
-            $toStart = (bool)ArrayHelper::getValue(Yii::$app->request->post(), 'toStart', false);
+            $toStart = ArrayHelper::getValue(Yii::$app->request->post(), 'toStart', false);
             $this->behavior->setUploadPosition($toStart);
 
             switch ($action) {
