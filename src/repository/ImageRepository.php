@@ -12,10 +12,11 @@ use yii\base\BaseObject;
 
 /**
  * Class ImageRepository
- * @package lo\modules\gallery\behaviors
- * @author Lukyanov Andrey <loveorigami@mail.ru>
  *
- * @property array $imagePathInfo
+ * @package lo\modules\gallery\behaviors
+ * @author  Lukyanov Andrey <loveorigami@mail.ru>
+ *
+ * @property array  $imagePathInfo
  * @property string $imageFile
  */
 class ImageRepository extends BaseObject implements ImageRepositoryInterface
@@ -65,6 +66,7 @@ class ImageRepository extends BaseObject implements ImageRepositoryInterface
     {
         $image = $this->loadModel($data);
         $this->model = null;
+
         return $image->save();
     }
 
@@ -85,11 +87,9 @@ class ImageRepository extends BaseObject implements ImageRepositoryInterface
     protected function loadModel($data)
     {
         $model = $this->getModel();
-
         $scenario = ArrayHelper::getValue($data, 'scenario', $model::SCENARIO_UPDATE);
         $model->scenario = $scenario;
-
-        if ($scenario == $model::SCENARIO_INSERT) {
+        if ($scenario === $model::SCENARIO_INSERT) {
             $toStart = ArrayHelper::getValue($data, 'toStart', 0);
             $pos = $this->findImages()->count() + 1;
 
@@ -118,7 +118,9 @@ class ImageRepository extends BaseObject implements ImageRepositoryInterface
      */
     public function getImagePathInfo()
     {
-        if (!$this->model) return null;
+        if (!$this->model) {
+            return null;
+        }
 
         $file = pathinfo($this->model->image);
 
@@ -127,6 +129,7 @@ class ImageRepository extends BaseObject implements ImageRepositoryInterface
         } else {
             $file['basename'] = null;
         }
+
         return $file;
     }
 
@@ -145,6 +148,7 @@ class ImageRepository extends BaseObject implements ImageRepositoryInterface
     public function oldImage()
     {
         $old = $this->model->getOldAttributes();
+
         return ($old['name'] != $this->model->name) ? $old['image'] : false;
     }
 
@@ -162,7 +166,7 @@ class ImageRepository extends BaseObject implements ImageRepositoryInterface
         $query->select('*')
             ->where([
                 'entity' => $this->entity,
-                'owner_id' => $this->ownerId
+                'owner_id' => $this->ownerId,
             ])
             ->orderBy(['pos' => SORT_ASC]);
 

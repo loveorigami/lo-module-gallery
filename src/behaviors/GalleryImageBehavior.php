@@ -18,10 +18,11 @@ use yii\helpers\FileHelper;
 
 /**
  * Behavior for adding gallery to any model.
- * @property mixed $uploadPosition
- * @property mixed $ownerId
+ *
+ * @property mixed           $uploadPosition
+ * @property mixed           $ownerId
  * @property \yii\base\Model $model
- * @property ActiveRecord $owner
+ * @property ActiveRecord    $owner
  */
 class GalleryImageBehavior extends GalleryBehavior
 {
@@ -78,7 +79,7 @@ class GalleryImageBehavior extends GalleryBehavior
         $this->_repository = new $repository([
             'modelClass' => $this->modelClass,
             'entity' => $this->entity,
-            'ownerId' => $this->getOwnerId()
+            'ownerId' => $this->getOwnerId(),
         ]);
     }
 
@@ -146,13 +147,13 @@ class GalleryImageBehavior extends GalleryBehavior
 
     /**
      * change status
+     *
      * @param array $data
      * @return ActiveRecord
      */
     public function statusImage($data)
     {
-        $updateData = $this->_repository->updateImage($data);
-        return $updateData;
+        return $this->_repository->updateImage($data);
     }
 
     /**
@@ -163,15 +164,16 @@ class GalleryImageBehavior extends GalleryBehavior
     {
         $image = $this->_repository->updateImage($data);
         $this->renameImage($image);
+
         return $image;
     }
 
     /**
      * @param $toStart
      */
-    public function setUploadPosition($toStart)
+    public function setUploadPosition(bool $toStart): void
     {
-        $this->toStart = $toStart === true ? 1 : 0;
+        $this->toStart = $toStart ? 1 : 0;
     }
 
     /**
@@ -191,7 +193,7 @@ class GalleryImageBehavior extends GalleryBehavior
             'image' => $this->fileName,
             'path' => $this->getAttrPath($this->path),
             'thumb' => $this->getAttrPath($this->thumbPath),
-            'toStart' => $this->toStart
+            'toStart' => $this->toStart,
         ];
 
         $this->_repository->saveImage($data);
@@ -206,6 +208,7 @@ class GalleryImageBehavior extends GalleryBehavior
             return $this->imageName;
         } else {
             $name = explode($this->originalNameDelimiter, $this->originalFileName);
+
             return $name[0];
         }
     }
@@ -226,6 +229,7 @@ class GalleryImageBehavior extends GalleryBehavior
         $alias = $pos === false ? $path : substr($path, 0, $pos);
 
         $root = str_replace($alias, '', $path);
+
         return $root;
     }
 
@@ -253,6 +257,7 @@ class GalleryImageBehavior extends GalleryBehavior
 
     /**
      * delete images
+     *
      * @param array $ids
      */
     public function deleteImages($ids = [])
@@ -286,6 +291,7 @@ class GalleryImageBehavior extends GalleryBehavior
 
     /**
      * Get Gallery Id
+     *
      * @return mixed as string or integer
      * @throws Exception
      */
@@ -329,11 +335,13 @@ class GalleryImageBehavior extends GalleryBehavior
 
     /**
      * Returns file path for the filename.
+     *
      * @return string|null the file path.
      */
     public function getThumbPath()
     {
         $path = $this->resolvePath($this->thumbPath);
+
         return $path ? Yii::getAlias($path) : null;
     }
 
@@ -400,6 +408,7 @@ class GalleryImageBehavior extends GalleryBehavior
 
     /**
      * delete file
+     *
      * @param string $filename
      */
     protected function delete($filename)
@@ -410,6 +419,7 @@ class GalleryImageBehavior extends GalleryBehavior
 
     /**
      * delete thumbs
+     *
      * @param $filename
      */
     protected function deleteThumbs($filename)
@@ -479,6 +489,7 @@ class GalleryImageBehavior extends GalleryBehavior
             $wm = $path instanceof Closure
                 ? call_user_func($path, $width, $height)
                 : $path;
+
             return Yii::getAlias($wm);
         } else {
             return null;
