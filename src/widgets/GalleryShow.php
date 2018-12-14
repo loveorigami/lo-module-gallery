@@ -5,6 +5,7 @@ namespace lo\modules\gallery\widgets;
 use lo\modules\gallery\repository\ImageRepository;
 use yii\base\Widget;
 use yii\data\ActiveDataProvider;
+use yii\helpers\ArrayHelper;
 
 
 /**
@@ -20,20 +21,20 @@ class GalleryShow extends Widget
      *
      * @var string
      */
-    const VIEW = 'gallery-show';
+    protected const VIEW = 'gallery-show';
 
     /**
      * Default columns
      *
      * @var int
      */
-    const COLS = 6;
+    protected const COLS = 6;
 
     /**
      * Default images
      */
-    const THUMB_TMB = 'tmb';
-    const THUMB_BIG = 'big';
+    protected const THUMB_TMB = 'tmb';
+    protected const THUMB_BIG = 'big';
 
     /**
      * @var object ImageRepository
@@ -73,6 +74,7 @@ class GalleryShow extends Widget
      * @var int
      */
     public $pageSize = 60;
+    public $urlHash;
 
     /**
      * @var array
@@ -108,12 +110,17 @@ class GalleryShow extends Widget
      *
      * @return string
      */
-    public function run()
+    public function run(): string
     {
         $pagination = [
             'pageSize' => $this->pageSize,
+            'pageParam' => 'page',
             'defaultPageSize' => $this->pageSize,
         ];
+
+        if ($this->urlHash) {
+            $pagination['params'] = ArrayHelper::merge($_GET, ['#' => $this->urlHash]);
+        }
 
         $query = $this->gallery->findImages()->published();
 
