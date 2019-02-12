@@ -14,7 +14,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="page-index">
     <?php
     echo CrudLinks::widget(["action" => CrudLinks::CRUD_LIST, "model" => $searchModel]);
-    echo $this->render('/menu');
+    echo $this->render('/_menu');
     echo $this->render('_filter', ['model' => $searchModel]);
     echo Grid::widget([
         'dataProvider' => $dataProvider,
