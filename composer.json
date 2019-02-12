@@ -31,6 +31,11 @@
     }
   },
   "extra": {
-    "bootstrap": "lo\\modules\\gallery\\Bootstrap"
+    "bootstrap": "lo\\modules\\gallery\\Bootstrap",
+	"config-plugin": {
+		"admin": [
+			"src/config/main.php"
+		]
+	}
   }
 }
