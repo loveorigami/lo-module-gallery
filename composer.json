@@ -34,7 +34,7 @@
     "bootstrap": "lo\\modules\\gallery\\Bootstrap",
 	"config-plugin": {
 		"admin": [
-			"src/config/main.php"
+			"src/modules/admin/config/main.php"
 		]
 	}
   }
