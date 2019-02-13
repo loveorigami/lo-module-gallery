@@ -35,6 +35,9 @@
 	"config-plugin": {
 		"admin": [
 			"src/modules/admin/config/main.php"
+		],
+		"cli": [
+			"src/config/cli.php"
 		]
 	}
   }
