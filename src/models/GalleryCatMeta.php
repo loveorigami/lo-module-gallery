@@ -44,7 +44,7 @@ class GalleryCatMeta extends MetaFields
                     "showInGrid" => true,
                     "showInFilter" => true,
                     "isRequired" => false,
-                    "editInGrid" => true,
+                    "updateInGrid" => true,
                 ],
                 "params" => [$this->owner, "name"]
             ],
