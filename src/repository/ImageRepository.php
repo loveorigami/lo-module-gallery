@@ -182,7 +182,7 @@ class ImageRepository extends BaseObject implements ImageRepositoryInterface
      */
     public function count()
     {
-        return $this->findImages()->count();
+        return $this->findImages()->published()->count();
     }
 
     /**
